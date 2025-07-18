@@ -3,7 +3,7 @@ import Home from './pages/Home'
 import AiPetCare from './pages/AiPetCare'
 import Doctor from './pages/Doctor'
 import Marketplace from './pages/Marketplace'
-import PetSection from   './pages/PetSection'
+import PetSection from   './pages/PetSection.jsx'
 import PetDating from './pages/PetDating'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -14,7 +14,7 @@ export default function App() {
   useLenis()
   return (
     
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen pt-16 bg-[#191c2d]">
         <Header />
         <main className="flex-grow">
           <Routes>

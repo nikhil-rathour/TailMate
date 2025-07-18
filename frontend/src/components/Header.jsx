@@ -2,15 +2,15 @@ import { Link , NavLink  } from "react-router-dom"
 
 export default function Header() {
   return (
-    <header className="bg-navy text-white px-6 py-4 shadow-lg sticky top-0 z-50 transition-all duration-300">
+    <header className="  bg-navy/80  shadow border border-navy/30 text-white px-6 py-2 fixed top-0 left-0 w-full z-50 transition-all duration-300 rounded-full">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
         <h1 className="text-2xl font-extrabold flex items-center gap-2 tracking-wide">
-          <span className="text-3xl hover:scale-110 transition-transform duration-200">🐾</span>
+          <span className="text-3xl hover:scale-110 transition-transform duration-200"></span>
           <span className="hidden sm:inline text-gold font-serif tracking-widest">TailMate</span>
         </h1>
         {/* Navigation */}
-        <nav className="flex items-center gap-2 sm:gap-6 bg-navy/80 px-4 py-2 rounded-full shadow border border-navy/30">
+        <nav className="flex items-center  gap-2 sm:gap-6  px-4 py-2  ">
         
           <NavLink 
             to="/"

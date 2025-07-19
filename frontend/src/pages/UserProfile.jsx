@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-const Userprofile = () => {
+const UserProfile = () => {
   const { currentUser, userInfo, loading, logout } = useAuth();
   
   // Format date from "Sat, 19 Jul 2025 16:56:32 GMT" to "July 2025"
@@ -250,4 +250,4 @@ const Userprofile = () => {
   );
 };
 
-export default Userprofile;
+export default UserProfile;

@@ -9,7 +9,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Help from './pages/Help'
 import useLenis from './hooks/useLenis'
-import Userprofile from './pages/Userprofile'
+import UserProfile from './pages/UserProfile'
 import Login from './pages/Login.jsx'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -57,7 +57,7 @@ export default function App() {
             <Route path="/help" element={<Help />} />
             <Route path="/user-profile" element={
               <ProtectedRoute>
-                <Userprofile />
+                <UserProfile />
               </ProtectedRoute>
             } />
           </Routes>

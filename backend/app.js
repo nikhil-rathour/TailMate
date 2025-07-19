@@ -3,6 +3,8 @@ const app = express()
 const connectDB = require("./db/db")
 require("dotenv").config()
 const aiPetCareRoute = require("./routes/aiPetCare.route")
+const mapRoute = require("./routes/maps.router")
+const aidoctorRoute = require("./routes/aidoctor.router")
 const core  = require("cors")
 
 
@@ -13,6 +15,8 @@ connectDB()
 
 //routers 
 app.use("/api" , aiPetCareRoute)
+app.use("/maps" , mapRoute)
+app.use("/api", aidoctorRoute)
 
 
 

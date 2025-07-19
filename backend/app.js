@@ -5,19 +5,20 @@ require("dotenv").config()
 const aiPetCareRoute = require("./routes/aiPetCare.route")
 const mapRoute = require("./routes/maps.router")
 const aidoctorRoute = require("./routes/aidoctor.router")
-const core  = require("cors")
+const cors = require("cors")
+const authRoutes = require("./routes/auth.router");
 
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use(core())
+app.use(cors())
 connectDB()
 
 //routers 
 app.use("/api" , aiPetCareRoute)
 app.use("/maps" , mapRoute)
 app.use("/api", aidoctorRoute)
-
+app.use("/api/auth", authRoutes);
 
 
 app.get("/", (req , res)=>{

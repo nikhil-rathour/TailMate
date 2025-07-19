@@ -41,7 +41,7 @@ const Doctor = () => {
   }, []);
 
   // Fetch nearby clinics when user location is available
-  console.log(userLocation);
+  
  
   useEffect(() => {
     if (userLocation) {

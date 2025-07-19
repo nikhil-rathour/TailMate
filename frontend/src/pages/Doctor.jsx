@@ -177,22 +177,7 @@ const Doctor = () => {
 
       {/* Emergency Resources Section */}
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Emergency Contacts */}
-        {/* <div className="flex-1 bg-white rounded-2xl shadow-xl p-5 border-2 border-navy/10">
-          <h2 className="text-lg font-bold mb-2 text-navy">Emergency Contacts</h2>
-          <ul className="space-y-3">
-            {emergencyContacts.map((c, idx) => (
-              <li key={idx} className="flex items-start gap-3">
-                <span className="text-2xl mt-1">{c.icon}</span>
-                <div>
-                  <div className="font-semibold text-gold">{c.name}</div>
-                  <div className="text-xs text-navy">{c.phone}</div>
-                  <div className="text-xs text-softgray">{c.desc}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div> */}
+        
         
         {/* First Aid Guides */}
         {/* <div className="flex-1 bg-white rounded-2xl shadow-xl p-5 border-2 border-navy/10">

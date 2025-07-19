@@ -43,45 +43,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      {/* <section className=" py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-extrabold text-center mb-10 ">Happy Tails, Happy Tales</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { name: 'Sarah J.', role: "Max's Mom", text: 'TailMate helped me find the perfect playdate...' },
-              { name: 'David L.', role: "Daisy's Dad", text: 'Adopting Daisy through TailMate was so smooth...' },
-              { name: 'Emily R.', role: "Luna's Owner", text: 'The marketplace is fantastic for finding...' },
-              { name: 'Jessica B.', role: "Fluffy’s Human", text: 'AI PetCare is a game-changer for my busy schedule...' },
-            ].map((testimonial, idx) => (
-              <div key={idx} className="bg-white p-8 rounded-2xl shadow-lg border border-navy/5">
-                <p className="italic mb-4 text-navy/80">“{testimonial.text}”</p>
-                <p className="font-bold text-navy">{testimonial.name}</p>
-                <p className="text-sm text-softgray">{testimonial.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
 
-      {/* Why Choose TailMate */}
-      {/* <section className="py-16 px-4 text-center max-w-5xl mx-auto">
-        <h2 className="text-3xl font-extrabold mb-8 text-gold">Why Choose TailMate?</h2>
-        <p className="text-lg text-softgray mb-12">Experience the difference with a platform built for every pet and every owner.</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            { title: 'Trusted & Secure', desc: 'Verified profiles and safe transactions.' },
-            { title: 'AI-Powered Insights', desc: 'Personalized care recommendations.' },
-            { title: 'Vibrant Community', desc: 'Connect with pet lovers and share stories.' },
-            { title: '24/7 Support', desc: 'Prompt help for emergencies and queries.' },
-          ].map((item, idx) => (
-            <div key={idx} className="bg-white p-8 rounded-2xl shadow-md border border-navy/5">
-              <h4 className="font-bold text-lg mb-2 text-navy">{item.title}</h4>
-              <p className="text-base text-softgray">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section> */}
 
       {/* Partners */}
       <section className=" py-16 px-4 text-center">

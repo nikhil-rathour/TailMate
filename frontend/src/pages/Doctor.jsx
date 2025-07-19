@@ -147,7 +147,7 @@ const Doctor = () => {
                     
                     <div className="mt-auto pt-2 flex gap-2">
                       <a 
-                        href={clinic.hospital_google_maps_link} 
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(clinic.hospital_name + ' ' + clinic.hospital_address)}`} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="bg-gold hover:bg-accent-orange text-navy font-bold py-2 px-4 rounded-full shadow transition text-xs flex-1 text-center"

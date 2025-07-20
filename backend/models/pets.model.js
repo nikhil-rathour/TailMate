@@ -47,6 +47,12 @@ const petsSchema = mongoose.Schema(
          require : true
 
      },
+     ownerData : {
+          type : Object,
+          required : true
+     },
+
+  
     description: {
         type: String,
         required: true

@@ -393,7 +393,7 @@ const PetSection = () => {
                     </div>
                   </div>
                   <button
-                    onClick={() => navigate(`/pets/${pet._id}`)}
+                    onClick={() => navigate(`/view-pet/${pet._id}`)}
                     className="mt-4 w-full bg-gold hover:bg-accent-orange text-navy font-bold py-2 rounded-full shadow transition"
                   >
                     {pet.listingType === "adoption" ? "Adopt Me!" : "Buy Now"}

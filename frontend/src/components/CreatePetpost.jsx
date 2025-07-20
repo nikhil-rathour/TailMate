@@ -42,7 +42,9 @@ const CreatePetpost = () => {
     listingType: 'adoption',
     price: '',
     description: '',
-    ownerEmail : userInfo.email
+    ownerEmail : userInfo.email,
+    ownerData : userInfo
+    
 
   });
   

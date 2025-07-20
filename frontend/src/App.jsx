@@ -69,7 +69,7 @@ export default function App() {
               </ProtectedRoute>
             } />
 
-            <Route path="/view-pet:id" element={<ViewPet/>} />
+            <Route path="/view-pet/:petId" element={<ViewPet/>} />
 
 
               

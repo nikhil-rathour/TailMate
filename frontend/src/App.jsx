@@ -13,6 +13,8 @@ import UserProfile from './pages/UserProfile'
 import Login from './pages/Login.jsx'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import CreatePetpost from './components/CreatePetpost.jsx'
+import ViewPet from './components/ViewPet.jsx'
 
 export default function App() {
   useLenis()
@@ -48,6 +50,12 @@ export default function App() {
               </ProtectedRoute>
             } />
 
+            <Route path="/add-pet" element={
+              <ProtectedRoute>
+                <CreatePetpost />
+              </ProtectedRoute>
+            } />
+
             <Route path="/dating" element={
               <ProtectedRoute>
                 <PetDating />
@@ -60,6 +68,11 @@ export default function App() {
                 <UserProfile />
               </ProtectedRoute>
             } />
+
+            <Route path="/view-pet:id" element={<ViewPet/>} />
+
+
+              
           </Routes>
         </main>
         <Footer />

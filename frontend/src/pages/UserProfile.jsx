@@ -1,8 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { getPetsByOwnerEmail } from "../services/petService"
+
 
 const UserProfile = () => {
   const { currentUser, userInfo, loading, logout } = useAuth();
+  const [pets, setPets] = useState([]);
+  const [petsLoading, setPetsLoading] = useState(false);
+  const [petsError, setPetsError] = useState(null);
+  
+ 
+  
+   // Get user email for fetching pets
+  const ownerEmail = userInfo?.email;
+   
+
+
+  const navigate = useNavigate()
+  
+  // Fetch user's pets from API
+  useEffect(() => {
+    const fetchPets = async () => {
+      if (!currentUser) return;
+      
+      setPetsLoading(true);
+      try {
+        // For testing/development, use mock data if API call fails
+        const mockPets = [
+          { _id: 1, name: 'Max', type: 'Dog', breed: 'Golden Retriever', age: 3, img: 'https://images.unsplash.com/photo-1552053831-71594a27632d' },
+          { _id: 2, name: 'Luna', type: 'Cat', breed: 'Siamese', age: 2, img: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba' }
+        ];
+        
+        try {
+          const token = await currentUser.getIdToken();
+
+          const response = await getPetsByOwnerEmail(ownerEmail, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          
+          if (response && response.data) {
+            // Use the data from the response
+            setPets(response.data);
+          } else {
+            // Fallback to mock data
+            setPets(mockPets);
+          }
+        } catch (apiError) {
+          console.warn('API call failed, using mock data:', apiError);
+          setPets(mockPets);
+        }
+        
+        setPetsError(null);
+      } catch (error) {
+        console.error('Error in pet data handling:', error);
+        setPetsError('Failed to load pets');
+      } finally {
+        setPetsLoading(false);
+      }
+    };
+    
+    fetchPets();
+  }, [currentUser]);
   
   // Format date from "Sat, 19 Jul 2025 16:56:32 GMT" to "July 2025"
   const formatJoinDate = (dateString) => {
@@ -31,11 +90,7 @@ const UserProfile = () => {
     email: userInfo?.email || currentUser?.email || 'alex@example.com',
   
     joinDate: formatJoinDate(currentUser?.metadata?.creationTime) || 'January 2023',
-    profileImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-    pets: [
-      { id: 1, name: 'Max', type: 'Dog', breed: 'Golden Retriever', age: 3, image: 'https://images.unsplash.com/photo-1552053831-71594a27632d' },
-      { id: 2, name: 'Luna', type: 'Cat', breed: 'Siamese', age: 2, image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba' }
-    ]
+    profileImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde'
   });
 
   const [activeTab, setActiveTab] = useState('profile');
@@ -71,13 +126,21 @@ const UserProfile = () => {
               <div className="flex flex-col md:flex-row gap-2 md:gap-6 mt-2">
                 <p className="text-sm text-white/60"><span className="text-gold">Member since:</span> {userData.joinDate}</p>
               </div>
-              <div className="mt-4">
-               
-                <button 
+              <div className="mt-4 ">
+                 <button 
+                   onClick={()=>{
+                  navigate("/add-pet")
+                  }}
+                  className="bg-gold mr-4 hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold text-sm shadow-lg transition">
+                  Add New Pet
+                   </button>
+
+                  <button 
                   onClick={logout}
                   className="bg-red-500/70 hover:bg-red-600 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg transition">
                   Logout
                 </button>
+                
               </div>
             </div>
           </div>
@@ -141,31 +204,7 @@ const UserProfile = () => {
                   </div>
                 </div>
                 
-                {/* <div className="bg-navy/50 p-6 rounded-xl border border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] hover:border-gold/60">
-                  <h3 className="text-xl font-bold mb-4 text-gold">Account Settings</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span>Email Notifications</span>
-                      <div className="w-12 h-6 bg-navy/70 rounded-full relative cursor-pointer">
-                        <div className="w-4 h-4 bg-gold absolute top-1 left-1 rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>SMS Alerts</span>
-                      <div className="w-12 h-6 bg-navy/70 rounded-full relative cursor-pointer">
-                        <div className="w-4 h-4 bg-white/70 absolute top-1 right-1 rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Profile Privacy</span>
-                      <select className="bg-navy/50 border border-gold/30 rounded-lg px-2 py-1 text-white focus:outline-none focus:ring-2 focus:ring-gold">
-                        <option>Public</option>
-                        <option>Friends Only</option>
-                        <option>Private</option>
-                      </select>
-                    </div>
-                  </div>
-                </div> */}
+           
               </div>
             )}
             
@@ -173,50 +212,75 @@ const UserProfile = () => {
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-2xl font-bold text-gold">My Pets</h3>
-                  <button className="bg-gold hover:bg-accent-orange text-navy px-4 py-2 rounded-full font-bold text-sm shadow-lg transition">
-                    Add New Pet
-                  </button>
+                
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {userData.pets.map(pet => (
-                    <div key={pet.id} className="bg-navy/50 p-6 rounded-xl border border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] hover:border-gold/60 hover:bg-gradient-to-br hover:from-navy/70 hover:to-navy/40">
-                      <div className="h-48 rounded-lg overflow-hidden mb-4">
-                        <img 
-                          src={pet.image} 
-                          alt={pet.name} 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <h4 className="text-xl font-bold text-gold mb-2">{pet.name}</h4>
-                      <p className="mb-1"><span className="text-gold/80">Type:</span> {pet.type}</p>
-                      <p className="mb-1"><span className="text-gold/80">Breed:</span> {pet.breed}</p>
-                      <p className="mb-3"><span className="text-gold/80">Age:</span> {pet.age} years</p>
-                      <div className="flex space-x-2">
-                        <button className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition">
-                          Edit
-                        </button>
-                        <button className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition">
-                          Care Plan
-                        </button>
-                        <button className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition">
-                          Dating
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {/* Add Pet Card */}
-                  <div className="bg-navy/30 p-6 rounded-xl border border-gold/20 border-dashed flex flex-col items-center justify-center text-center min-h-[300px] cursor-pointer hover:bg-navy/40 transition-all duration-300">
-                    <div className="w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center mb-4">
-                      <span className="text-3xl text-gold">+</span>
-                    </div>
-                    <h4 className="text-xl font-bold text-gold mb-2">Add New Pet</h4>
-                    <p className="text-white/60">Register your pet to access all TailMate features</p>
+                {petsLoading ? (
+                  <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
                   </div>
-                </div>
+                ) : petsError ? (
+                  <div className="text-center py-12">
+                    <p className="text-red-400 mb-4">{petsError}</p>
+                    <button 
+                      onClick={() => window.location.reload()} 
+                      className="bg-gold hover:bg-accent-orange text-navy px-4 py-2 rounded-full font-bold text-sm shadow-lg transition"
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {pets.length > 0 ? pets.map(pet => (
+                      <div key={pet._id || pet.id} className="bg-navy/50 p-6 rounded-xl border border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] hover:border-gold/60 hover:bg-gradient-to-br hover:from-navy/70 hover:to-navy/40">
+                        <div className="h-48 rounded-lg overflow-hidden mb-4">
+                          <img 
+                            src={pet.img || pet.image || 'https://images.unsplash.com/photo-1552053831-71594a27632d'} 
+                            alt={pet.name} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <h4 className="text-xl font-bold text-gold mb-2">{pet.name}</h4>
+                        <p className="mb-1"><span className="text-gold/80">Type:</span> {pet.type}</p>
+                        <p className="mb-1"><span className="text-gold/80">Breed:</span> {pet.breed}</p>
+                        <p className="mb-3"><span className="text-gold/80">Age:</span> {pet.age} years</p>
+                        <div className="flex space-x-2">
+                          <button className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition">
+                            Edit
+                          </button>
+                          <button className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition">
+                            Care Plan
+                          </button>
+                          <button className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition">
+                            Dating
+                          </button>
+                        </div>
+                      </div>
+                    )) : (
+                      <div className="col-span-3 text-center py-8">
+                        <p className="text-white/60 mb-4">You haven't added any pets yet</p>
+                      </div>
+                    )}
+                    
+                    {/* Add Pet Card */}
+                    <div className="bg-navy/30 p-6 rounded-xl border border-gold/20 border-dashed flex flex-col items-center justify-center text-center min-h-[300px] cursor-pointer hover:bg-navy/40 transition-all duration-300">
+                      <div 
+                       onClick={()=>{
+                      navigate("/add-pet")
+                       }}
+                      className="w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center mb-4">
+                        <span className="text-3xl text-gold">+</span>
+                      </div>
+                      <h4 className="text-xl font-bold text-gold mb-2">Add New Pet</h4>
+                      <p className="text-white/60">Register your pet to access all TailMate features</p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
+
+
+
             
             {activeTab === 'matches' && (
               <div className="text-center py-12">
@@ -230,6 +294,8 @@ const UserProfile = () => {
                 </button>
               </div>
             )}
+
+            
             
             {activeTab === 'orders' && (
               <div className="text-center py-12">

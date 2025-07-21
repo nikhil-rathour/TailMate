@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { getPetsByOwnerEmail } from "../services/petService"
+import DeletePetButton from "../components/DeletePetButton";
+
 
 
 const UserProfile = () => {
@@ -233,7 +235,9 @@ const UserProfile = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {pets.length > 0 ? pets.map(pet => (
                       <div key={pet._id || pet.id} className="bg-navy/50 p-6 rounded-xl border border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] hover:border-gold/60 hover:bg-gradient-to-br hover:from-navy/70 hover:to-navy/40">
-                        <div className="h-48 rounded-lg overflow-hidden mb-4">
+                        <div 
+                          onClick={()=>{navigate(`/view-pet/${pet._id}`)}}
+                        className="h-48 rounded-lg overflow-hidden mb-4">
                           <img 
                             src={pet.img || pet.image || 'https://images.unsplash.com/photo-1552053831-71594a27632d'} 
                             alt={pet.name} 
@@ -245,15 +249,31 @@ const UserProfile = () => {
                         <p className="mb-1"><span className="text-gold/80">Breed:</span> {pet.breed}</p>
                         <p className="mb-3"><span className="text-gold/80">Age:</span> {pet.age} years</p>
                         <div className="flex space-x-2">
-                          <button className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition">
-                            Edit
-                          </button>
-                          <button className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition">
-                            Care Plan
-                          </button>
-                          <button className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition">
-                            Dating
-                          </button>
+                          <button 
+                            
+                          className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition"
+                          onClick={() => navigate(`/update-pet/${pet._id}`)}
+                        >
+                          Edit
+                        </button>
+
+                          <button 
+                            
+                          className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs shadow-lg transition"
+                          onClick={() => navigate(`/view-pet/${pet._id}`)}
+                        >
+                          View More
+                        </button>
+                          
+                          
+                         
+                          <DeletePetButton
+                            petId={pet._id}
+                            petName={pet.name}
+                            onDelete={() => setPets(pets => pets.filter(p => p._id !== pet._id))}
+                          />
+
+                           
                         </div>
                       </div>
                     )) : (

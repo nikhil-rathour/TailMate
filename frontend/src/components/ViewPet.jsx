@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getPetById } from '../services/petService';
 import { getPetsByOwnerEmail } from "../services/petService"
 import { useAuth } from "../context/AuthContext"
+import DeletePetButton from "./DeletePetButton";
 
 
 const ViewPet = () => {
     const { currentUser } = useAuth();
+    const navigate = useNavigate();
   
   const { petId } = useParams();
   
   const [pet, setPet] = useState(null);
   const [petLoading, setPetLoading] = useState(false);
   const [petError, setPetError] = useState(null);
-   const [OwenerPets, setOwenerPets] = useState([]);
-    const [petsLoading, setPetsLoading] = useState(false);
-    const [petsError, setPetsError] = useState(null);
+  const [ownerPets, setOwnerPets] = useState([]);
+  const [petsLoading, setPetsLoading] = useState(false);
+  const [petsError, setPetsError] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
     
 
   useEffect(() => {
@@ -24,6 +27,11 @@ const ViewPet = () => {
       try {
         const response = await getPetById(petId);
         setPet(response);
+        
+        // Check if current user is the owner
+        if (currentUser && response?.data?.ownerEmail === currentUser.email) {
+          setIsOwner(true);
+        }
       } catch (error) {
         setPetError(error.message);
       } finally {
@@ -32,7 +40,7 @@ const ViewPet = () => {
     };
 
     fetchPet();
-  }, [petId]);
+  }, [petId, currentUser]);
 
 
  // owners all posts 
@@ -54,7 +62,7 @@ const ViewPet = () => {
            if (otherPets.length === 0) {
              setPetsError('Owner only has one pet');
            }
-           setOwenerPets(response.data);
+           setOwnerPets(response.data);
          }
        } catch (error) { 
          console.error('Error fetching owner pets:', error);
@@ -67,7 +75,6 @@ const ViewPet = () => {
      fetchPets();
    }, [pet, currentUser]);
 
-   console.log(pet);
    
    
    
@@ -151,9 +158,27 @@ const ViewPet = () => {
                 </div>
               </div>
               
-              <div className="space-x-4">
-                <button className="bg-gold hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold shadow-lg transition">Contact Owner</button>
-                <button className="bg-white hover:bg-beige text-navy px-6 py-2 rounded-full font-bold shadow-lg transition">Save Pet</button>
+              <div className="flex flex-wrap gap-3 mt-4">
+                {currentUser && pet?.data?.ownerEmail && currentUser.email === pet.data.ownerEmail ? (
+                  <>
+                    <button
+                      onClick={() => navigate(`/update-pet/${pet.data._id}`)}
+                      className="bg-gold hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold shadow-lg transition flex-1"
+                    >
+                      Edit Pet
+                    </button>
+                    <DeletePetButton
+                      petId={pet.data._id}
+                      petName={pet.data.name}
+                      onDelete={() => navigate('/petsection')}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <button className="bg-gold hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold shadow-lg transition flex-1">Contact Owner</button>
+                    <button className="bg-white hover:bg-beige text-navy px-6 py-2 rounded-full font-bold shadow-lg transition flex-1">Save Pet</button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -183,27 +208,51 @@ const ViewPet = () => {
           
           {/* Owner Info */}
           <div className="bg-navy/50 rounded-3xl shadow-xl p-6 border-2 border-navy/20">
-            <h2 className="text-2xl font-bold mb-4 text-gold">Owner</h2>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-full bg-lightgray overflow-hidden">
-                <img 
-                  src={pet.data.ownerData?.picture || 'https://via.placeholder.com/150'} 
-                  alt={pet.data.ownerData?.name || 'Pet Owner'} 
-                  className="w-full h-full object-cover"
-                />
+            <h2 className="text-2xl font-bold mb-4 text-gold">{isOwner ? 'Your Pet Listing' : 'Owner'}</h2>
+            {isOwner ? (
+              <div className="space-y-4">
+                <div className="p-4 bg-navy/70 rounded-xl">
+                  <p className="text-gold font-medium">This is your pet listing</p>
+                  <p className="text-softgray text-sm mt-1">You can edit or delete this listing using the buttons above</p>
+                </div>
+                <div className="p-4 bg-navy/70 rounded-xl">
+                  <h3 className="text-gold font-medium mb-2">Listing Statistics</h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <p className="text-softgray">Views</p>
+                      <p className="font-semibold">--</p>
+                    </div>
+                    <div>
+                      <p className="text-softgray">Saved</p>
+                      <p className="font-semibold">--</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="font-bold text-lg">{pet.data.ownerData?.name || 'Pet Owner'}</p>
-                <p className="text-softgray text-sm">{pet.data.ownerData?.email || 'N/A'}</p>
-              </div>
-            </div>
-            <button className="w-full bg-gold hover:bg-accent-orange text-navy px-4 py-2 rounded-full font-bold shadow-lg transition">View Profile</button>
+            ) : (
+              <>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 rounded-full bg-lightgray overflow-hidden">
+                    <img 
+                      src={pet.data.ownerData?.picture || 'https://via.placeholder.com/150'} 
+                      alt={pet.data.ownerData?.name || 'Pet Owner'} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-bold text-lg">{pet.data.ownerData?.name || 'Pet Owner'}</p>
+                    <p className="text-softgray text-sm">{pet.data.ownerData?.email || 'N/A'}</p>
+                  </div>
+                </div>
+                <button className="w-full bg-gold hover:bg-accent-orange text-navy px-4 py-2 rounded-full font-bold shadow-lg transition">View Profile</button>
+              </>
+            )}
           </div>
         </div>
         
         {/* Owner's Other Pets Section */}
         <div className="bg-navy/50 rounded-3xl shadow-xl p-6 border-2 border-navy/20">
-          <h2 className="text-2xl font-bold mb-6 text-gold">Owner's Other Pets</h2>
+          <h2 className="text-2xl font-bold mb-6 text-gold">{isOwner ? 'Your Other Listings' : 'Owner\'s Other Pets'}</h2>
           
           {petsLoading ? (
             <div className="text-center py-4">
@@ -213,10 +262,10 @@ const ViewPet = () => {
             <div className="text-center py-4">
               <p className="text-red-400">{petsError}</p>
             </div>
-          ) : OwenerPets && OwenerPets.length > 0 ? (
+          ) : ownerPets && ownerPets.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              {OwenerPets.filter(ownerPet => ownerPet._id !== pet.data._id).map((ownerPet) => (
-                <Link to={`/pets/${ownerPet._id}`} key={ownerPet._id} className="bg-navy/70 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition">
+              {ownerPets.filter(ownerPet => ownerPet._id !== pet.data._id).map((ownerPet) => (
+                <Link to={`/view-pet/${ownerPet._id}`} key={ownerPet._id} className="bg-navy/70 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition">
                   <div className="h-40 bg-lightgray">
                     <img 
                       src={ownerPet.img || 'https://images.unsplash.com/photo-1601758123927-195e4b9f6e0e'} 
@@ -227,13 +276,23 @@ const ViewPet = () => {
                   <div className="p-4">
                     <h3 className="font-bold">{ownerPet.name}</h3>
                     <p className="text-softgray text-sm">{ownerPet.breed} • {ownerPet.age} years</p>
+                    {isOwner && (
+                      <div className="mt-2 flex justify-end">
+                        <Link to={`/update-pet/${ownerPet._id}`} className="text-gold text-sm hover:underline">Edit</Link>
+                      </div>
+                    )}
                   </div>
                 </Link>
               ))}
             </div>
           ) : (
             <div className="text-center py-4">
-              <p className="text-softgray">No other pets from this owner</p>
+              <p className="text-softgray">{isOwner ? 'You have no other pet listings' : 'No other pets from this owner'}</p>
+              {isOwner && (
+                <Link to="/add-pet" className="inline-block mt-4 bg-gold hover:bg-accent-orange text-navy px-4 py-2 rounded-full font-bold shadow-lg transition">
+                  Add New Pet
+                </Link>
+              )}
             </div>
           )}
         </div>

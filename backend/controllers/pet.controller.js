@@ -121,7 +121,7 @@ const updatePet = async (req, res) => {
     }
     
     // Check if user is the owner
-    if (req.user && pet.owner.toString() !== req.user._id.toString()) {
+    if (req.user && pet.ownerEmail !== req.user.email) {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to update this pet'
@@ -157,7 +157,7 @@ const deletePet = async (req, res) => {
     }
     
     // Check if user is the owner
-    if (req.user && pet.owner.toString() !== req.user._id.toString()) {
+    if (req.user && pet.ownerEmail !== req.user.email) {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to delete this pet'

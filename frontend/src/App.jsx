@@ -15,6 +15,7 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import CreatePetpost from './components/CreatePetpost.jsx'
 import ViewPet from './components/ViewPet.jsx'
+import UpdatePetForm from './components/UpdatePetForm.jsx'
 
 export default function App() {
   useLenis()
@@ -70,6 +71,9 @@ export default function App() {
             } />
 
             <Route path="/view-pet/:petId" element={<ViewPet/>} />
+            <Route path="/update-pet/:petId" element={<UpdatePetForm/>} />
+
+            
 
 
               

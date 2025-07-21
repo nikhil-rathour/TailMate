@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getPetById } from '../services/petService';
+import { getPetsByOwnerEmail } from "../services/petService"
+import { useAuth } from "../context/AuthContext"
+
 
 const ViewPet = () => {
+    const { currentUser } = useAuth();
   
   const { petId } = useParams();
   
   const [pet, setPet] = useState(null);
   const [petLoading, setPetLoading] = useState(false);
   const [petError, setPetError] = useState(null);
+   const [OwenerPets, setOwenerPets] = useState([]);
+    const [petsLoading, setPetsLoading] = useState(false);
+    const [petsError, setPetsError] = useState(null);
+    
 
   useEffect(() => {
     const fetchPet = async () => {
@@ -27,7 +35,44 @@ const ViewPet = () => {
   }, [petId]);
 
 
-console.log(pet);
+ // owners all posts 
+  useEffect(() => {
+     const fetchPets = async () => {
+       if (!pet || !pet.data || !pet.data.ownerEmail) return;
+       
+       setPetsLoading(true);
+       try {
+         const token = await currentUser?.getIdToken();
+         
+         const response = await getPetsByOwnerEmail(pet.data.ownerEmail, {
+           headers: { Authorization: `Bearer ${token}` }
+         });
+         
+         if (response && response.data) {
+           // Check if owner has only one pet (the current one)
+           const otherPets = response.data.filter(p => p._id !== pet.data._id);
+           if (otherPets.length === 0) {
+             setPetsError('Owner only has one pet');
+           }
+           setOwenerPets(response.data);
+         }
+       } catch (error) { 
+         console.error('Error fetching owner pets:', error);
+         setPetsError('Failed to load owner\'s pets');
+       } finally {
+         setPetsLoading(false);
+       }
+     };
+     
+     fetchPets();
+   }, [pet, currentUser]);
+
+   console.log(pet);
+   
+   
+   
+
+
 
 
   if (petLoading) {
@@ -75,7 +120,12 @@ console.log(pet);
               <div>
                 <div className="flex justify-between items-center mb-4">
                   <h1 className="text-4xl font-extrabold text-gold">{pet?.data.name}</h1>
-                  <span className="bg-gold text-navy px-4 py-1 rounded-full font-bold">{pet?.data.type}</span>
+                  <div className="flex gap-2">
+                    <span className="bg-gold text-navy px-4 py-1 rounded-full font-bold">{pet?.data.type}</span>
+                    <span className={`${pet?.data.listingType === 'sale' ? 'bg-green-500' : 'bg-blue-500'} text-white px-4 py-1 rounded-full font-bold`}>
+                      {pet?.data.listingType === 'sale' ? 'For Sale' : 'For Adoption'}
+                    </span>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
@@ -93,6 +143,10 @@ console.log(pet);
                   <div>
                     <p className="text-softgray">Location</p>
                     <p className="font-semibold">{pet?.data.location}</p>
+                  </div>
+                  <div>
+                    <p className="text-softgray">Listed On</p>
+                    <p className="font-semibold">{pet?.data.createdAt ? new Date(pet.data.createdAt).toLocaleDateString() : 'N/A'}</p>
                   </div>
                 </div>
               </div>
@@ -147,22 +201,41 @@ console.log(pet);
           </div>
         </div>
         
-        {/* Similar Pets Section */}
+        {/* Owner's Other Pets Section */}
         <div className="bg-navy/50 rounded-3xl shadow-xl p-6 border-2 border-navy/20">
-          <h2 className="text-2xl font-bold mb-6 text-gold">Similar Pets</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((item) => (
-              <div key={item} className="bg-navy/70 rounded-2xl overflow-hidden shadow-lg">
-                <div className="h-40 bg-lightgray">
-                  {/* Placeholder for pet image */}
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold">Pet Name</h3>
-                  <p className="text-softgray text-sm">Breed • Age</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h2 className="text-2xl font-bold mb-6 text-gold">Owner's Other Pets</h2>
+          
+          {petsLoading ? (
+            <div className="text-center py-4">
+              <p className="text-softgray">Loading pets...</p>
+            </div>
+          ) : petsError ? (
+            <div className="text-center py-4">
+              <p className="text-red-400">{petsError}</p>
+            </div>
+          ) : OwenerPets && OwenerPets.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              {OwenerPets.filter(ownerPet => ownerPet._id !== pet.data._id).map((ownerPet) => (
+                <Link to={`/pets/${ownerPet._id}`} key={ownerPet._id} className="bg-navy/70 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition">
+                  <div className="h-40 bg-lightgray">
+                    <img 
+                      src={ownerPet.img || 'https://images.unsplash.com/photo-1601758123927-195e4b9f6e0e'} 
+                      alt={ownerPet.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold">{ownerPet.name}</h3>
+                    <p className="text-softgray text-sm">{ownerPet.breed} • {ownerPet.age} years</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-softgray">No other pets from this owner</p>
+            </div>
+          )}
         </div>
         
         {/* Back Button */}

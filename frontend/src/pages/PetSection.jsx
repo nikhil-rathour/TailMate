@@ -368,11 +368,14 @@ const PetSection = () => {
                         {pet.breed}
                     </h3>
                     <div className="text-sm text-softgray mb-1">
-                      , {pet.age} years
+                      {pet.gender}, {pet.age} years
                     
                     </div>
                     <div className="text-xs text-softgray mb-1">
                       {pet.location}
+                    </div>
+                    <div className="text-xs text-softgray mb-1">
+                      Added: {new Date(pet.createdAt).toLocaleDateString()}
                     </div>
                     <div className="text-xs mt-1">
                       <span

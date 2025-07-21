@@ -70,8 +70,16 @@ export default function App() {
               </ProtectedRoute>
             } />
 
-            <Route path="/view-pet/:petId" element={<ViewPet/>} />
-            <Route path="/update-pet/:petId" element={<UpdatePetForm/>} />
+            <Route path="/view-pet/:petId" element={
+              <ProtectedRoute>
+                <ViewPet />
+              </ProtectedRoute>
+            } />
+            <Route path="/update-pet/:petId" element={
+              <ProtectedRoute>
+                <UpdatePetForm />
+              </ProtectedRoute>
+            } />
 
             
 

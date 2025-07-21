@@ -95,7 +95,7 @@ const UserProfile = () => {
     profileImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde'
   });
 
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('pets');
 
   return (
     <div className="bg-navy min-h-screen text-white">
@@ -150,12 +150,7 @@ const UserProfile = () => {
           {/* Tabs */}
           <div className="border-b border-gold/30 mb-6">
             <nav className="flex flex-wrap -mb-px">
-              <button 
-                onClick={() => setActiveTab('profile')} 
-                className={`mr-4 py-2 px-4 font-medium text-sm border-b-2 ${activeTab === 'profile' ? 'border-gold text-gold' : 'border-transparent text-white/60 hover:text-white/90'}`}
-              >
-                Profile
-              </button>
+          
               <button 
                 onClick={() => setActiveTab('pets')} 
                 className={`mr-4 py-2 px-4 font-medium text-sm border-b-2 ${activeTab === 'pets' ? 'border-gold text-gold' : 'border-transparent text-white/60 hover:text-white/90'}`}
@@ -179,36 +174,7 @@ const UserProfile = () => {
           
           {/* Tab Content */}
           <div className="min-h-[400px]">
-            {activeTab === 'profile' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-navy/50 p-6 rounded-xl border border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] hover:border-gold/60">
-                  <h3 className="text-xl font-bold mb-4 text-gold">Personal Information</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-gold mb-1 text-sm">Full Name</label>
-                      <input 
-                        type="text" 
-                        value={userData.name} 
-                        className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold" 
-                        readOnly
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gold mb-1 text-sm">Email</label>
-                      <input 
-                        type="email" 
-                        value={userData.email} 
-                        className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold" 
-                        readOnly
-                      />
-                    </div>
-                    
-                  </div>
-                </div>
-                
-           
-              </div>
-            )}
+        
             
             {activeTab === 'pets' && (
               <div>

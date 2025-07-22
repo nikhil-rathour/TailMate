@@ -1,17 +1,25 @@
 const petService = require('../services/pet.service');
+const { uploadImage } = require('../services/gcs.service');
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 /**
  * Add a new pet
  */
+// Use multer middleware for this route
 const addPet = async (req, res) => {
   try {
-    const petData = req.body;
-    
+    let petData = req.body;
+    // If file is present, upload to GCS
+    if (req.file) {
+      const gcsUrl = await uploadImage(req.file.buffer, Date.now() + '-' + req.file.originalname, req.file.mimetype);
+      petData.img = gcsUrl;
+    }
     // Add owner from authenticated user
     if (req.user) {
       petData.owner = req.user._id;
     }
-    
     const pet = await petService.createPet(petData);
     res.status(201).json({
       success: true,
@@ -185,3 +193,6 @@ module.exports = {
   updatePet,
   deletePet
 };
+
+// Export multer upload for use in router
+module.exports.upload = upload;

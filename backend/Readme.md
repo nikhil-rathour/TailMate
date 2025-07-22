@@ -308,30 +308,18 @@ No authentication required.
 ##### Method: `POST`
 
 ##### Description
-Creates a new pet listing.
+Creates a new pet listing. Now supports image upload via multipart/form-data. The image is stored in Google Cloud Storage and the public URL is saved in the pet document.
 
 ##### Authentication
 Firebase token required (Bearer token).
 
 ##### Request
-- **Content-Type:** `application/json`
+- **Content-Type:** `multipart/form-data`
 - **Headers:**
   - `Authorization`: `Bearer <firebase_token>`
 - **Body Example:**
-
-```json
-{
-  "name": "Max",
-  "type": "dog",
-  "gender": "male",
-  "breed": "Golden Retriever",
-  "age": 3,
-  "location": "New York",
-  "img": "https://example.com/pet-image.jpg",
-  "listingType": "adoption",
-  "description": "Friendly and energetic dog looking for a new home"
-}
-```
+  - Fields: name, type, gender, breed, age, location, listingType, description, etc.
+  - File: `img` (the image file)
 
 ##### Response
 - **Content-Type:** `application/json`
@@ -353,7 +341,7 @@ Firebase token required (Bearer token).
     "breed": "Golden Retriever",
     "age": 3,
     "location": "New York",
-    "img": "https://example.com/pet-image.jpg",
+    "img": "https://storage.googleapis.com/tailmate-images/1681234567890-max.jpg",
     "listingType": "adoption",
     "description": "Friendly and energetic dog looking for a new home",
     "owner": "60d21b4667d0d8992e610c80",

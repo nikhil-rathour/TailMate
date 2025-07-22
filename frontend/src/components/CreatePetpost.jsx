@@ -47,6 +47,10 @@ const CreatePetpost = () => {
     
 
   });
+  // console.log(userInfo);
+  
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
   
 
   const handleChange = (e) => {
@@ -57,11 +61,21 @@ const CreatePetpost = () => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    } else {
+      setImagePreview('');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Validate form
-    if (!formData.name || !formData.breed || !formData.age || !formData.location || !formData.img || !formData.description) {
+    if (!formData.name || !formData.breed || !formData.age || !formData.location || !imageFile || !formData.description) {
       setError('Please fill in all required fields');
       return;
     }
@@ -76,14 +90,18 @@ const CreatePetpost = () => {
       setLoading(true);
       setError(null);
       
-      // Convert age to number
-      const petData = {
-        ...formData,
-        age: Number(formData.age),
-        price: formData.price ? Number(formData.price) : undefined
-      };
-      
-      const response = await addPet(petData);
+      const data = new FormData();
+      // Handle each form field appropriately
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === 'ownerData') {
+          // Pass ownerData as a proper object
+          data.append(key, JSON.stringify(value));
+        } else {
+          data.append(key, value);
+        }
+      });
+      data.append('img', imageFile);
+      const response = await addPet(data);
       navigate('/petsection'); // Redirect to pets page after successful creation
     } catch (err) {
       console.error('Failed to create pet listing:', err);
@@ -195,15 +213,14 @@ const CreatePetpost = () => {
               />
             </div>
             
-            {/* Image URL */}
+            {/* Image Upload */}
             <div>
-              <label className="block text-navy font-medium mb-2">Image URL *</label>
+              <label className="block text-navy font-medium mb-2">Image *</label>
               <input
-                type="url"
+                type="file"
                 name="img"
-                value={formData.img}
-                onChange={handleChange}
-                placeholder="https://example.com/pet-image.jpg"
+                accept="image/*"
+                onChange={handleFileChange}
                 className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
                 required
               />
@@ -257,12 +274,12 @@ const CreatePetpost = () => {
           </div>
           
           {/* Preview Image */}
-          {formData.img && (
+          {imagePreview && (
             <div className="mt-6">
               <label className="block text-navy font-medium mb-2">Image Preview</label>
               <div className="h-48 w-full rounded-lg overflow-hidden">
                 <img 
-                  src={formData.img} 
+                  src={imagePreview} 
                   alt="Pet preview" 
                   className="w-full h-full object-cover"
                   onError={(e) => {

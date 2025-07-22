@@ -234,14 +234,14 @@ const ViewPet = () => {
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-16 h-16 rounded-full bg-lightgray overflow-hidden">
                     <img 
-                      src={pet.data.ownerData?.picture || 'https://via.placeholder.com/150'} 
-                      alt={pet.data.ownerData?.name || 'Pet Owner'} 
+                      src={typeof pet.data.ownerData === 'string' ? JSON.parse(pet.data.ownerData)?.picture : pet.data.ownerData?.picture || 'https://via.placeholder.com/150'} 
+                      alt={typeof pet.data.ownerData === 'string' ? JSON.parse(pet.data.ownerData)?.name : pet.data.ownerData?.name || 'Pet Owner'} 
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div>
-                    <p className="font-bold text-lg">{pet.data.ownerData?.name || 'Pet Owner'}</p>
-                    <p className="text-softgray text-sm">{pet.data.ownerData?.email || 'N/A'}</p>
+                    <p className="font-bold text-lg">{typeof pet.data.ownerData === 'string' ? JSON.parse(pet.data.ownerData)?.name : pet.data.ownerData?.name || 'Pet Owner'}</p>
+                    <p className="text-softgray text-sm">{pet.data.ownerEmail || 'N/A'}</p>
                   </div>
                 </div>
                 <button className="w-full bg-gold hover:bg-accent-orange text-navy px-4 py-2 rounded-full font-bold shadow-lg transition">View Profile</button>

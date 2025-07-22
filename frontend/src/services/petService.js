@@ -49,9 +49,11 @@ export const getPetsByOwnerEmail = async (email, config = {}) => {
 export const addPet = async (petData) => {
   try {
     const token = await getAuthToken();
+    const isFormData = petData instanceof FormData;
     const response = await axios.post(`${API_URL}/add-pet`, petData, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        ...(isFormData ? { 'Content-Type': 'multipart/form-data' } : {})
       }
     });
     return response.data;
@@ -65,9 +67,11 @@ export const addPet = async (petData) => {
 export const updatePet = async (id, petData) => {
   try {
     const token = await getAuthToken();
+    const isFormData = petData instanceof FormData;
     const response = await axios.put(`${API_URL}/update-pet/${id}`, petData, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        ...(isFormData ? { 'Content-Type': 'multipart/form-data' } : {})
       }
     });
     return response.data;

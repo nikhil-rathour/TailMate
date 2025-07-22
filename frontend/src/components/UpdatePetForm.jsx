@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getPetById, updatePet } from "../services/petService";
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
 
 const petTypes = [
   { label: 'Dog', value: 'dog' },
@@ -21,7 +21,7 @@ const listingTypes = [
 ];
 
 const UpdatePetForm = () => {
-  const { userInfo } = useAuth();
+  // const { userInfo } = useAuth();
   const { petId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -185,18 +185,7 @@ const UpdatePetForm = () => {
               />
             </div>
             {/* Image URL */}
-            <div>
-              <label className="block text-navy font-medium mb-2">Image URL *</label>
-              <input
-                type="url"
-                name="img"
-                value={formData.img}
-                onChange={handleChange}
-                placeholder="https://example.com/pet-image.jpg"
-                className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
-                required
-              />
-            </div>
+         
             {/* Listing Type */}
             <div>
               <label className="block text-navy font-medium mb-2">Listing Type *</label>

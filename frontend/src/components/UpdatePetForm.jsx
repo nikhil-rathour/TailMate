@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getPetById, updatePet } from "../services/petService";
 import { useNavigate, useParams } from 'react-router-dom';
 // import { useAuth } from "../context/AuthContext";
+import { motion } from 'framer-motion';
 
 const petTypes = [
   { label: 'Dog', value: 'dog' },
@@ -86,43 +87,100 @@ const UpdatePetForm = () => {
   };
 
   if (fetching) {
-    return <div className="flex justify-center items-center h-[60vh] text-gold text-xl">Loading pet data...</div>;
+    return (
+      <div className="bg-navy min-h-screen flex justify-center items-center">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-gold text-2xl font-bold flex items-center"
+        >
+          <svg className="animate-spin -ml-1 mr-3 h-8 w-8 text-gold" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Loading pet data...
+        </motion.div>
+      </div>
+    );
   }
   if (error) {
-    return <div className="flex justify-center items-center h-[60vh] text-red-500 text-xl">{error}</div>;
+    return (
+      <div className="bg-navy min-h-screen flex justify-center items-center">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-red-400 text-2xl font-bold"
+        >
+          {error}
+        </motion.div>
+      </div>
+    );
   }
   if (!formData) return null;
 
   return (
-    <div className="bg-navy min-h-screen py-8 px-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-6 border-2 border-navy/10">
-        <h1 className="text-2xl font-bold text-navy mb-6">Update Pet Listing</h1>
-        {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">Pet updated successfully!</div>}
+    <div className="bg-navy min-h-screen py-16 px-4 text-white">
+      {/* Hero Section */}
+      <section className="relative bg-navy py-8 flex items-center justify-center overflow-hidden mb-8">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col justify-center items-center text-center z-10"
+        >
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight drop-shadow-lg">Update Pet Listing</h1>
+          <p className="text-lg md:text-xl mb-4 text-gold font-medium drop-shadow">Update your pet's information</p>
+        </motion.div>
+        <div className="absolute right-0 bottom-0 w-1/2 h-full bg-[url('https://images.unsplash.com/photo-1601758123927-195e4b9f6e0e')] bg-cover bg-center opacity-20 z-0" />
+      </section>
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="max-w-3xl mx-auto bg-white/10 backdrop-blur-sm rounded-3xl shadow-xl p-8 border-2 border-gold/20 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all duration-500"
+      >
+        <h2 className="text-3xl font-bold mb-6 text-gold text-center">Pet Information</h2>
+        {success && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-green-500/20 border border-green-500 text-white px-4 py-3 rounded-lg mb-4 animate-pulse text-center"
+          >
+            Pet updated successfully!
+          </motion.div>
+        )}
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-red-500/20 border border-red-500 text-white px-4 py-3 rounded-lg mb-4 text-center"
+          >
+            {error}
+          </motion.div>
         )}
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Pet Name */}
             <div>
-              <label className="block text-navy font-medium mb-2">Pet Name *</label>
+              <label className="block text-gold mb-2 font-medium">Pet Name *</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
+                className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                 required
               />
             </div>
             {/* Pet Type */}
             <div>
-              <label className="block text-navy font-medium mb-2">Pet Type *</label>
+              <label className="block text-gold mb-2 font-medium">Pet Type *</label>
               <select
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
-                className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
+                className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                 required
               >
                 {petTypes.map(type => (
@@ -132,12 +190,12 @@ const UpdatePetForm = () => {
             </div>
             {/* Gender */}
             <div>
-              <label className="block text-navy font-medium mb-2">Gender *</label>
+              <label className="block text-gold mb-2 font-medium">Gender *</label>
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
+                className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                 required
               >
                 {genderOptions.map(option => (
@@ -147,19 +205,19 @@ const UpdatePetForm = () => {
             </div>
             {/* Breed */}
             <div>
-              <label className="block text-navy font-medium mb-2">Breed *</label>
+              <label className="block text-gold mb-2 font-medium">Breed *</label>
               <input
                 type="text"
                 name="breed"
                 value={formData.breed}
                 onChange={handleChange}
-                className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
+                className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                 required
               />
             </div>
             {/* Age */}
             <div>
-              <label className="block text-navy font-medium mb-2">Age (years) *</label>
+              <label className="block text-gold mb-2 font-medium">Age (years) *</label>
               <input
                 type="number"
                 name="age"
@@ -167,20 +225,20 @@ const UpdatePetForm = () => {
                 onChange={handleChange}
                 min="0"
                 step="0.1"
-                className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
+                className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                 required
               />
             </div>
             {/* Location */}
             <div>
-              <label className="block text-navy font-medium mb-2">Location *</label>
+              <label className="block text-gold mb-2 font-medium">Location *</label>
               <input
                 type="text"
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="City, State"
-                className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
+                className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                 required
               />
             </div>
@@ -188,12 +246,12 @@ const UpdatePetForm = () => {
          
             {/* Listing Type */}
             <div>
-              <label className="block text-navy font-medium mb-2">Listing Type *</label>
+              <label className="block text-gold mb-2 font-medium">Listing Type *</label>
               <select
                 name="listingType"
                 value={formData.listingType}
                 onChange={handleChange}
-                className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
+                className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                 required
               >
                 {listingTypes.map(type => (
@@ -204,7 +262,7 @@ const UpdatePetForm = () => {
             {/* Price (only for sale listings) */}
             {formData.listingType === 'sale' && (
               <div>
-                <label className="block text-navy font-medium mb-2">Price ($) *</label>
+                <label className="block text-gold mb-2 font-medium">Price ($) *</label>
                 <input
                   type="number"
                   name="price"
@@ -212,7 +270,7 @@ const UpdatePetForm = () => {
                   onChange={handleChange}
                   min="0"
                   step="0.01"
-                  className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
+                  className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                   required
                 />
               </div>
@@ -220,21 +278,21 @@ const UpdatePetForm = () => {
           </div>
           {/* Description */}
           <div className="mt-6">
-            <label className="block text-navy font-medium mb-2">Description *</label>
+            <label className="block text-gold mb-2 font-medium">Description *</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
               rows="4"
-              className="w-full border-2 border-navy/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/30"
+              className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
               required
             ></textarea>
           </div>
           {/* Preview Image */}
           {formData.img && (
             <div className="mt-6">
-              <label className="block text-navy font-medium mb-2">Image Preview</label>
-              <div className="h-48 w-full rounded-lg overflow-hidden">
+              <label className="block text-gold mb-2 font-medium">Image Preview</label>
+              <div className="h-60 w-full rounded-lg overflow-hidden shadow-lg border border-gold/30">
                 <img 
                   src={formData.img} 
                   alt="Pet preview" 
@@ -248,24 +306,31 @@ const UpdatePetForm = () => {
             </div>
           )}
           {/* Submit Button */}
-          <div className="mt-8 flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => navigate('/petsection')}
-              className="px-6 py-2 bg-gray-200 text-navy font-bold rounded-full hover:bg-gray-300 transition"
+          <div className="mt-10 text-center">
+            <motion.div 
+              className="flex flex-col sm:flex-row justify-center gap-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2 bg-gold text-navy font-bold rounded-full hover:bg-accent-orange transition disabled:opacity-50"
-            >
-              {loading ? 'Updating...' : 'Update Pet'}
-            </button>
+              <button
+                type="button"
+                onClick={() => navigate('/petsection')}
+                className="px-8 py-3 bg-white/10 backdrop-blur-sm text-white font-bold rounded-full hover:bg-white/20 transition-all duration-300 shadow-md hover:shadow-lg w-full sm:w-auto border border-white/30"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-8 py-3 rounded-full font-bold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] transform hover:scale-105 disabled:opacity-50 w-full sm:w-auto"
+              >
+                {loading ? 'Updating...' : 'Update Pet'}
+              </button>
+            </motion.div>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };

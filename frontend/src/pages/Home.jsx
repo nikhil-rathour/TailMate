@@ -1,62 +1,243 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FiArrowRight, FiHeart, FiShoppingBag, FiHome, FiPhone, FiAward } from 'react-icons/fi';
 
 export default function Home() {
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
   
   return (
     <div className="bg-navy min-h-screen text-white">
       {/* Hero Section */}
-      <section className="relative bg-navy h-[80vh] flex items-center justify-center overflow-hidden">
+      <section className="relative bg-navy h-[80vh] flex items-center justify-center overflow-hidden px-4">
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center z-10">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-lg">Connecting Hearts, One Paw at a Time.</h1>
-          <p className="text-xl md:text-2xl mb-8 text-gold font-medium drop-shadow">Your ultimate pet companion ecosystem for dating, adoption, marketplace, and AI care.</p>
-          <div className="space-x-4">
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-lg"
+          >
+            Connecting Hearts, One Paw at a Time.
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg sm:text-xl md:text-2xl mb-8 text-gold font-medium drop-shadow max-w-3xl"
+          >
+            Your ultimate pet companion ecosystem for dating, adoption, marketplace, and AI care.
+          </motion.p>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="flex flex-wrap gap-4 justify-center"
+          >
             <Link to="/dating">
-              <button className="bg-gold hover:bg-accent-orange text-navy px-8 py-3 rounded-full font-bold text-lg shadow-lg transition">Find Your Fur-ever Friend</button>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-8 py-3 rounded-full font-bold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] flex items-center gap-2"
+              >
+                <FiHeart /> Find Your Fur-ever Friend
+              </motion.button>
             </Link>
             <Link to="/aipetcare">
-              <button className="bg-white hover:bg-beige text-navy px-8 py-3 rounded-full font-bold text-lg shadow-lg transition">Ai Pet Care</button>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg transition-all duration-300 flex items-center gap-2"
+              >
+                <FiAward /> AI Pet Care
+              </motion.button>
             </Link>
-          </div>
+          </motion.div>
         </div>
-        <div className="absolute right-0 bottom-0 w-1/2 h-full bg-[url('https://images.unsplash.com/photo-1601758123927-195e4b9f6e0e')] bg-cover bg-center opacity-20 z-0" />
+        <div className="absolute inset-0 bg-[url('/pets-hero.jpg')] bg-cover bg-center opacity-20 z-0" />
       </section>
 
       {/* Features Section */}
       <section className="py-16 px-4 max-w-7xl mx-auto text-center">
-        <h2 className="text-4xl font-extrabold mb-4 text-gold tracking-tight">Discover TailMate's Core Features</h2>
-        <p className="text-lg text-softgray mb-10">A comprehensive ecosystem designed to enhance every aspect of pet ownership.</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        <motion.h2 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-3xl md:text-4xl font-extrabold mb-4 text-gold tracking-tight"
+        >
+          Discover TailMate's Core Features
+        </motion.h2>
+        <motion.p 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="text-lg text-white/80 mb-10 max-w-3xl mx-auto"
+        >
+          A comprehensive ecosystem designed to enhance every aspect of pet ownership.
+        </motion.p>
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8"
+        >
           {[
-            { title: 'Pet Dating', desc: 'Discover compatible furry friends.', color: 'bg-beige', btn: 'Start Matching' },
-            { title: 'Pet Adoption', desc: 'Give a loving home to pets in need.', color: 'bg-lightgray', btn: 'Adopt Now' },
-            { title: 'Marketplace', desc: 'Buy & sell pet essentials.', color: 'bg-white', btn: 'Shop Now' },
-            { title: 'Emergency Help', desc: 'Access nearby vets & services.', color: 'bg-beige', btn: 'Get Help' },
-            { title: 'AI PetCare', desc: 'Personalized care plans.', color: 'bg-lightgray', btn: 'Optimize Care' },
+            { title: 'Pet Dating', desc: 'Discover compatible furry friends.', color: 'bg-white/10', icon: <FiHeart className="text-gold text-3xl mb-4" />, btn: 'Start Matching' },
+            { title: 'Pet Adoption', desc: 'Give a loving home to pets in need.', color: 'bg-white/10', icon: <FiHome className="text-gold text-3xl mb-4" />, btn: 'Adopt Now' },
+            { title: 'Marketplace', desc: 'Buy & sell pet essentials.', color: 'bg-white/10', icon: <FiShoppingBag className="text-gold text-3xl mb-4" />, btn: 'Shop Now' },
+            { title: 'Emergency Help', desc: 'Access nearby vets & services.', color: 'bg-white/10', icon: <FiPhone className="text-gold text-3xl mb-4" />, btn: 'Get Help' },
+            { title: 'AI PetCare', desc: 'Personalized care plans.', color: 'bg-white/10', icon: <FiAward className="text-gold text-3xl mb-4" />, btn: 'Optimize Care' },
           ].map((feature, idx) => (
-            <div key={idx} className={`p-8 rounded-3xl shadow-xl ${feature.color} flex flex-col items-center border-2 border-navy/10`}> 
-              <h3 className="text-2xl font-bold mb-2 text-navy">{feature.title}</h3>
-              <p className="text-base text-softgray mb-6">{feature.desc}</p>
-              <button className="bg-gold hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-semibold shadow transition">{feature.btn}</button>
-            </div>
+            <motion.div 
+              key={idx} 
+              variants={itemVariants}
+              className={`p-6 rounded-3xl ${feature.color} backdrop-blur-sm flex flex-col items-center border border-gold/20 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all duration-500`}
+            > 
+              {feature.icon}
+              <h3 className="text-xl font-bold mb-2 text-gold">{feature.title}</h3>
+              <p className="text-base text-white/70 mb-6">{feature.desc}</p>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-6 py-2 rounded-full font-semibold shadow transition-all duration-300 flex items-center gap-2"
+              >
+                {feature.btn} <FiArrowRight size={14} />
+              </motion.button>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
 
+
+      {/* Why Choose Us Section */}
+      <section className="py-16 px-4 bg-white/5">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-gold">Why Choose TailMate?</h2>
+            <p className="text-lg text-white/80 max-w-3xl mx-auto">We're more than just a pet platform - we're a community dedicated to the wellbeing of pets and their owners.</p>
+          </motion.div>
+          
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
+            {[
+              { title: 'Verified Pet Profiles', desc: 'All pets on our platform are verified by our team to ensure accurate information and safe interactions.' },
+              { title: 'Community Support', desc: 'Join a thriving community of pet lovers who share advice, experiences, and friendship.' },
+              { title: 'Expert Guidance', desc: 'Access to veterinarians, trainers, and pet care specialists for all your pet-related questions.' },
+            ].map((item, idx) => (
+              <motion.div 
+                key={idx}
+                variants={itemVariants}
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-gold/20 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all duration-500"
+              >
+                <div className="w-12 h-12 bg-gradient-to-r from-gold to-accent-orange rounded-full flex items-center justify-center text-navy font-bold text-xl mb-4">
+                  {idx + 1}
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-gold">{item.title}</h3>
+                <p className="text-white/70">{item.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
       {/* Partners */}
-      <section className=" py-16 px-4 text-center">
-        <h2 className="text-3xl font-extrabold mb-8 text-white">Our Trusted Partners</h2>
-        <div className="flex flex-wrap justify-center items-center gap-8">
-          {[...Array(9)].map((_, idx) => (
-            <div key={idx} className="w-20 h-20 bg-lightgray rounded-full border-2 border-navy/10"></div>
+      <section className="py-16 px-4 text-center">
+        <motion.h2 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-3xl font-extrabold mb-8 text-gold"
+        >
+          Our Trusted Partners
+        </motion.h2>
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="flex flex-wrap justify-center items-center gap-6 md:gap-8"
+        >
+          {[...Array(6)].map((_, idx) => (
+            <motion.div 
+              key={idx} 
+              variants={itemVariants}
+              whileHover={{ scale: 1.05 }}
+              className="w-24 h-24 bg-white/10 backdrop-blur-sm rounded-full border border-gold/20 flex items-center justify-center text-gold text-2xl"
+            >
+              P{idx+1}
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
-      {/* Footer */}
-      {/* You can add a styled footer here if needed */}
+      {/* Newsletter Section */}
+      <section className="py-16 px-4 bg-white/5">
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.h2 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-3xl font-bold mb-4 text-gold"
+          >
+            Join Our Pet Lovers Community
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-lg mb-6 text-white/80"
+          >
+            Subscribe to our newsletter for pet care tips, events, and updates on new features.
+          </motion.p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto"
+          >
+            <input 
+              type="email" 
+              placeholder="Your email address" 
+              className="flex-grow px-4 py-3 rounded-full bg-white/10 border border-gold/30 text-white focus:outline-none focus:ring-2 focus:ring-gold"
+            />
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-6 py-3 rounded-full font-bold transition-all duration-300"
+            >
+              Subscribe
+            </motion.button>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }

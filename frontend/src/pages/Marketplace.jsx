@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { FiSearch, FiShoppingCart, FiFilter } from 'react-icons/fi';
 import { motion } from 'framer-motion';
-import MarketPlaceVideo from '../videos/marketplacevideo';
+import MarketPlaceVideo from '../videos/MarketPlaceVideo';
+
 
 const categories = ['All Products', 'Food & Treats', 'Toys & Games', 'Accessories', 'Health & Wellness', 'Grooming'];
 

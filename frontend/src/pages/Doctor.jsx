@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { FiMapPin, FiPhone, FiStar, FiSearch, FiHelpCircle } from 'react-icons/fi';
-// import VideoBackground from '../videos/VideoBackground';
+import Docvideo from '../videos/DocVideo';
 
 const emergencyContacts = [
   { name: 'Poison Control Hotline', phone: '(888) 426-4435', desc: 'For pet-related poisoning emergencies.', icon: '☏' },
@@ -131,8 +131,7 @@ const Doctor = () => {
         </div>
 
         {/* bg - image */}
-        {/* <VideoBackground/> */}
-
+           <Docvideo/>
         {/* <div className="absolute right-0 bottom-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1550831107-1553da8c8464')] bg-cover bg-center opacity-20 z-0" /> */}
      
       </section>

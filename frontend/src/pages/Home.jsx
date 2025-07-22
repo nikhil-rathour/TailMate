@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiArrowRight, FiHeart, FiShoppingBag, FiHome, FiPhone, FiAward } from 'react-icons/fi';
+import VideoBackground from '../videos/VideoBackground';
 
 export default function Home() {
   // Animation variants
@@ -67,7 +68,9 @@ export default function Home() {
             </Link>
           </motion.div>
         </div>
-        <div className="absolute inset-0 bg-[url('/pets-hero.jpg')] bg-cover bg-center opacity-20 z-0" />
+        {/* <div className="absolute inset-0 bg-[url('/pets-hero.jpg')] bg-cover bg-center opacity-20 z-0" /> */}
+        <VideoBackground/>
+
       </section>
 
       {/* Features Section */}

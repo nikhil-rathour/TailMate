@@ -3,6 +3,7 @@ import { getAllPets } from "../services/petService";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiSearch, FiFilter, FiPlus, FiHeart } from "react-icons/fi";
+import PetSectionVideo from "../videos/PetSection";
 
 const petTypes = [
   { label: "All Pets", value: "all" },
@@ -109,7 +110,7 @@ const PetSection = () => {
   return (
     <div className="bg-navy min-h-screen text-white">
       {/* Hero Section */}
-      <section className="relative bg-navy h-[50vh] flex items-center justify-center overflow-hidden">
+      <section className="relative bg-navy h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center z-10 px-4">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
@@ -146,7 +147,8 @@ const PetSection = () => {
             </button>
           </motion.div>
         </div>
-        <div className="absolute right-0 bottom-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1508672019048-805c876b67e2')] bg-cover bg-center opacity-20 z-0" />
+        <PetSectionVideo/>
+        {/* <div className="absolute right-0 bottom-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1508672019048-805c876b67e2')] bg-cover bg-center opacity-20 z-0" /> */}
       </section>
 
       {/* Filters Section */}

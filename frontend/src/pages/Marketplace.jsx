@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FiSearch, FiShoppingCart, FiFilter } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import MarketPlaceVideo from '../videos/marketplacevideo';
 
 const categories = ['All Products', 'Food & Treats', 'Toys & Games', 'Accessories', 'Health & Wellness', 'Grooming'];
 
@@ -81,7 +82,8 @@ export default function Marketplace() {
             </button>
           </motion.div>
         </div>
-        <div className="absolute right-0 bottom-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1583337130417-3346a1be7dee')] bg-cover bg-center opacity-20 z-0" />
+        <MarketPlaceVideo/>
+        {/* <div className="absolute right-0 bottom-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1583337130417-3346a1be7dee')] bg-cover bg-center opacity-20 z-0" /> */}
       </section>
 
       {/* Categories and Search Section */}

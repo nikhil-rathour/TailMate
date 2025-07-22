@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSend, FiAward, FiActivity, FiDroplet, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import PetCareVideo from '../videos/PetDatingVideo';
 
 export default function AiPetCare() {
   const [loading, setLoading] = useState(false);
@@ -118,7 +119,8 @@ export default function AiPetCare() {
             </motion.button>
           </motion.div>
         </div>
-        <div className="absolute right-0 bottom-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1601758123927-195e4b9f6e0e')] bg-cover bg-center opacity-20 z-0" />
+        <PetCareVideo/>
+        {/* <div className="absolute right-0 bottom-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1601758123927-195e4b9f6e0e')] bg-cover bg-center opacity-20 z-0" /> */}
       </section>
 
       {/* Form Section */}

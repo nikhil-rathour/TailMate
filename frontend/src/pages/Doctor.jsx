@@ -90,7 +90,7 @@ const Doctor = () => {
   return (
     <div className="bg-navy min-h-screen text-white">
       {/* Hero Section */}
-      <section className="relative bg-navy h-[50vh] flex items-center justify-center overflow-hidden">
+      <section className="relative bg-navy h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center z-10 px-4">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}

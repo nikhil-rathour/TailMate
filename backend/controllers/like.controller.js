@@ -31,8 +31,9 @@ const addLike = async (req, res) => {
 
 const getAllLikes = async (req, res) => {
     try {
-        const { userId } = req.body;
-        const likes = await likeService.listAllLikes(userId);
+        const { id } = req.params;
+        console.log(id)
+        const likes = await likeService.listAllLikes(id);
         res.status(200).json({
             success: true,
             data: likes,
@@ -47,7 +48,9 @@ const getAllLikes = async (req, res) => {
 
 const deleteLike = async (req, res) => {
     try {
+        console.log(req.body)
         const { userId, postId } = req.body;
+        console.log("liek",userId, postId)
         await likeService.deleteLike(userId, postId);
         res.status(200).json({
             success: true,

@@ -11,6 +11,7 @@ const createLike =  async(userId, postId) => {
 }
 
 const deleteLike = async(userId, postId) => {
+    console.log("delete like", userId, postId)
     return await like.findOneAndDelete({userId, postId});
 }
 

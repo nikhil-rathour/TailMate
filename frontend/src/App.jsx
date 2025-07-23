@@ -20,6 +20,7 @@ import CreateDatingPetpost from './components/CreateDatingPetPost.jsx'
 import ViewDatingPet from './components/ViewDatingPet.jsx'
 import Chat from './components/Chat/Chat.jsx'
 import ChatPage from './components/Chat/ChatPage.jsx'
+import { LikeProvider } from './context/LikeContext.jsx'
 
 export default function App() {
   useLenis();

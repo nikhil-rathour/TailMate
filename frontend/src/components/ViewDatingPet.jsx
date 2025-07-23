@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FiArrowLeft, FiMapPin, FiActivity, FiHeart, FiMail, FiUser } from 'react-icons/fi';
 import { getDatingPetById, getDatingPetsByOwnerEmail } from '../services/petDatingService';
 import { useAuth } from "../context/AuthContext";
+import DeletePetButton from './DeletePetButton';
 
 const ViewDatingPet = () => {
   const { petId } = useParams();
@@ -227,8 +228,17 @@ const ViewDatingPet = () => {
                     >
                       Edit Pet
                     </motion.button>
+
+                    
                   )}
+
+                      <DeletePetButton
+                      petId={pet._id}
+                      petName={pet.name}
+                      onDelete={() => navigate('/dating')}
+                    />
                 </div>
+                
               </div>
               
               <div className="md:w-1/3">

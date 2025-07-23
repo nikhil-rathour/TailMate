@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSend, FiAward, FiActivity, FiDroplet, FiChevronDown, FiChevronUp } from 'react-icons/fi';
-import PetCareVideo from '../videos/PetDatingVideo';
+import PetCareVideo from '../videos/PetCareVideo';
 
 export default function AiPetCare() {
   const [loading, setLoading] = useState(false);

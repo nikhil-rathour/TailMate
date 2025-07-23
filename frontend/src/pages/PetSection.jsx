@@ -59,7 +59,9 @@ const PetSection = () => {
         };
 
         const response = await getAllPets(filters);
-        setPets(response.data || []);
+        // Filter pets where isDating is false or undefined
+        const nonDatingPets = response.data.filter(pet => pet.isDating === false || pet.isDating === undefined);
+        setPets(nonDatingPets || []);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch pets:", err);
@@ -135,7 +137,7 @@ const PetSection = () => {
             className="flex flex-wrap gap-4 justify-center"
           >
             <button 
-              onClick={() => navigate("/add-pet")}
+              onClick={() => navigate("/dating")}
               className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-8 py-3 rounded-full font-bold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] transform hover:scale-105 flex items-center gap-2"
             >
               <FiPlus /> Add New Pet

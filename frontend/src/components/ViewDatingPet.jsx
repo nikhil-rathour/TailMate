@@ -1,0 +1,180 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FiArrowLeft, FiMapPin, FiActivity, FiHeart, FiMail } from 'react-icons/fi';
+import { getDatingPetById } from '../services/petDatingService';
+
+const ViewDatingPet = () => {
+  const { petId } = useParams();
+  const navigate = useNavigate();
+  const [pet, setPet] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPet = async () => {
+      try {
+        setLoading(true);
+        const response = await getDatingPetById(petId);
+        setPet(response);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch pet details:', err);
+        setError('Failed to load pet details. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (petId) {
+      fetchPet();
+    }
+  }, [petId]);
+
+  if (loading) {
+    return (
+      <div className="bg-navy min-h-screen text-white py-16 px-4 flex justify-center items-center">
+        <div className="relative">
+          <div className="w-16 h-16 border-t-4 border-b-4 border-gold rounded-full animate-spin"></div>
+          <div className="w-16 h-16 border-r-4 border-l-4 border-gold/30 rounded-full animate-spin absolute top-0 left-0" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !pet) {
+    return (
+      <div className="bg-navy min-h-screen text-white py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <button 
+            onClick={() => navigate('/dating')}
+            className="flex items-center gap-2 text-gold hover:text-accent-orange transition-all duration-300 mb-8"
+          >
+            <FiArrowLeft /> Back to Pet Dating
+          </button>
+          
+          <div className="bg-red-500/20 border border-red-500 text-white px-4 py-3 rounded-lg mb-6 text-center">
+            {error || "Pet not found"}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-navy min-h-screen text-white py-16 px-4">
+      <div className="max-w-4xl mx-auto">
+        <button 
+          onClick={() => navigate('/dating')}
+          className="flex items-center gap-2 text-gold hover:text-accent-orange transition-all duration-300 mb-8"
+        >
+          <FiArrowLeft /> Back to Pet Dating
+        </button>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-white/10 backdrop-blur-sm rounded-3xl overflow-hidden border border-gold/20 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all duration-500"
+        >
+          <div className="h-80 overflow-hidden relative">
+            <img 
+              src={pet.img} 
+              alt={pet.name} 
+              className="w-full h-full object-cover" 
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://placehold.co/800x400?text=Pet';
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy to-transparent opacity-70"></div>
+            <div className="absolute bottom-0 left-0 p-8">
+              <h1 className="text-4xl font-bold text-white mb-2">{pet.name}</h1>
+              <div className="flex items-center gap-2 text-gold">
+                <span className="bg-gold/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
+                  {pet.breed}
+                </span>
+                <span className="bg-gold/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
+                  {pet.gender}
+                </span>
+                <span className="bg-gold/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
+                  {pet.age} years
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-8">
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex-grow">
+                <h2 className="text-2xl font-bold mb-4 text-gold">About {pet.name}</h2>
+                <p className="text-white/80 mb-6 leading-relaxed">
+                  {pet.description || pet.desc}
+                </p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                  <div className="flex items-center gap-2 text-white/70">
+                    <FiMapPin className="text-gold" /> 
+                    <span>{pet.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-white/70">
+                    <FiActivity className="text-gold" /> 
+                    <span>Activity Level: {pet.activity}</span>
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-6 py-3 rounded-full font-bold flex items-center gap-2 transition-all duration-300"
+                  >
+                    <FiHeart /> Match with {pet.name}
+                  </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 transition-all duration-300"
+                  >
+                    <FiMail /> Contact Owner
+                  </motion.button>
+                </div>
+              </div>
+              
+              <div className="md:w-1/3">
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-gold/10">
+                  <h3 className="text-xl font-bold mb-4 text-gold">Compatibility</h3>
+                  <div className="space-y-4">
+                    {[
+                      { trait: 'Friendliness', value: 85 },
+                      { trait: 'Energy', value: pet.activity === 'High' ? 90 : pet.activity === 'Medium' ? 60 : 30 },
+                      { trait: 'Training', value: 70 },
+                    ].map((item, idx) => (
+                      <div key={idx}>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-white/80">{item.trait}</span>
+                          <span className="text-gold">{item.value}%</span>
+                        </div>
+                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${item.value}%` }}
+                            transition={{ duration: 1, delay: 0.3 + (idx * 0.2) }}
+                            className="h-full bg-gradient-to-r from-gold to-accent-orange"
+                          ></motion.div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default ViewDatingPet;

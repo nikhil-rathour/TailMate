@@ -16,6 +16,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 import CreatePetpost from './components/CreatePetpost.jsx'
 import ViewPet from './components/ViewPet.jsx'
 import UpdatePetForm from './components/UpdatePetForm.jsx'
+import CreateDatingPetpost from './components/CreateDatingPetPost.jsx'
+import ViewDatingPet from './components/ViewDatingPet.jsx'
 
 export default function App() {
   useLenis()
@@ -81,9 +83,17 @@ export default function App() {
               </ProtectedRoute>
             } />
 
+            <Route path="/create-dating-pet" element={
+              <ProtectedRoute>
+                <CreateDatingPetpost/>
+              </ProtectedRoute>
+            } />
             
-
-
+            <Route path="/view-dating-pet/:petId" element={
+              <ProtectedRoute>
+                <ViewDatingPet />
+              </ProtectedRoute>
+            } />
               
           </Routes>
         </main>

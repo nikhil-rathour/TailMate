@@ -22,68 +22,96 @@ import Chat from './components/Chat/Chat.jsx'
 import ChatPage from './components/Chat/ChatPage.jsx'
 
 export default function App() {
-  useLenis()
+  useLenis();
   return (
     <AuthProvider>
-      <div className="flex flex-col min-h-screen pt-16 bg-[#191c2d]">
-        <Header />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/aipetcare" element={
-              <ProtectedRoute>
-                <AiPetCare />
-              </ProtectedRoute>
-            }/>
+      <LikeProvider>
+        <div className="flex flex-col min-h-screen pt-16 bg-[#191c2d]">
+          <Header />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Home />} />
+              <Route
+                path="/aipetcare"
+                element={
+                  <ProtectedRoute>
+                    <AiPetCare />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/doctor" element={
-              <ProtectedRoute>
-                <Doctor />
-              </ProtectedRoute>
-            }/>
+              <Route
+                path="/doctor"
+                element={
+                  <ProtectedRoute>
+                    <Doctor />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/marketplace" element={
-              <ProtectedRoute>
-                <Marketplace />
-              </ProtectedRoute>
-            }/>
+              <Route
+                path="/marketplace"
+                element={
+                  <ProtectedRoute>
+                    <Marketplace />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/petsection" element={
-              <ProtectedRoute>
-                <PetSection />
-              </ProtectedRoute>
-            } />
+              <Route
+                path="/petsection"
+                element={
+                  <ProtectedRoute>
+                    <PetSection />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/add-pet" element={
-              <ProtectedRoute>
-                <CreatePetpost />
-              </ProtectedRoute>
-            } />
+              <Route
+                path="/add-pet"
+                element={
+                  <ProtectedRoute>
+                    <CreatePetpost />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/dating" element={
-              <ProtectedRoute>
-                <PetDating />
-              </ProtectedRoute>
-            }/>
+              <Route
+                path="/dating"
+                element={
+                  <ProtectedRoute>
+                    <PetDating />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/help" element={<Help />} />
-            <Route path="/user-profile" element={
-              <ProtectedRoute>
-                <UserProfile />
-              </ProtectedRoute>
-            } />
+              <Route path="/help" element={<Help />} />
+              <Route
+                path="/user-profile"
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/view-pet/:petId" element={
-              <ProtectedRoute>
-                <ViewPet />
-              </ProtectedRoute>
-            } />
-            <Route path="/update-pet/:petId" element={
-              <ProtectedRoute>
-                <UpdatePetForm />
-              </ProtectedRoute>
-            } />
+              <Route
+                path="/view-pet/:petId"
+                element={
+                  <ProtectedRoute>
+                    <ViewPet />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/update-pet/:petId"
+                element={
+                  <ProtectedRoute>
+                    <UpdatePetForm />
+                  </ProtectedRoute>
+                }
+              />
 
             <Route path="/create-dating-pet" element={
               <ProtectedRoute>
@@ -113,6 +141,7 @@ export default function App() {
         </main>
         <Footer />
       </div>
+      </LikeProvider>
     </AuthProvider>
-  )
+  );
 }

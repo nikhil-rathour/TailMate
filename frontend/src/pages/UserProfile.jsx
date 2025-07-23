@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { getPetsByOwnerEmail } from "../services/petService"
 import DeletePetButton from "../components/DeletePetButton";
+import { motion } from 'framer-motion';
 
 
 
@@ -96,8 +97,27 @@ const UserProfile = () => {
   });
 
   const [activeTab, setActiveTab] = useState('pets');
+  const [showAddPetPopup, setShowAddPetPopup] = useState(false);
+
+  const handleAddPetClick = () => {
+    setShowAddPetPopup(true);
+  };
+
+  const handlePopupClose = () => {
+    setShowAddPetPopup(false);
+  };
+
+  const navigateToAddPet = (isDating) => {
+    if (isDating) {
+      navigate("/create-dating-pet");
+    } else {
+      navigate("/add-pet");
+    }
+    setShowAddPetPopup(false);
+  };
 
   return (
+  <>
     <div className="bg-navy min-h-screen text-white">
       {/* Hero Section */}
       <section className="relative bg-navy py-16 flex items-center justify-center overflow-hidden">
@@ -130,9 +150,7 @@ const UserProfile = () => {
               </div>
               <div className="mt-4 ">
                  <button 
-                   onClick={()=>{
-                  navigate("/add-pet")
-                  }}
+                   onClick={handleAddPetClick}
                   className="bg-gold mr-4 hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold text-sm shadow-lg transition">
                   Add New Pet
                    </button>
@@ -178,8 +196,10 @@ const UserProfile = () => {
             
             {activeTab === 'pets' && (
               <div>
+                
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-2xl font-bold text-gold">My Pets</h3>
+                  
                 
                 </div>
                 
@@ -199,21 +219,45 @@ const UserProfile = () => {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
                     {pets.length > 0 ? pets.map(pet => (
                       <div key={pet._id || pet.id} className="bg-navy/50 p-6 rounded-xl border border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] hover:border-gold/60 hover:bg-gradient-to-br hover:from-navy/70 hover:to-navy/40">
                         <div 
-                          onClick={()=>{navigate(`/view-pet/${pet._id}`)}}
-                        className="h-48 rounded-lg overflow-hidden mb-4">
+                          onClick={()=>{
+                            
+                            if (pet.isDating) {
+                              navigate(`/view-dating-pet/${pet._id}`);
+                            } else {
+                              navigate(`/view-pet/${pet._id}`);
+                            }
+                        }} className="h-48 rounded-lg overflow-hidden mb-4 relative">
                           <img 
                             src={pet.img || pet.image || 'https://images.unsplash.com/photo-1552053831-71594a27632d'} 
                             alt={pet.name} 
                             className="w-full h-full object-cover"
                           />
+                          
+                          {/* Label based on isDating condition */}
+                          {pet.isDating ? (
+                            <span className="absolute top-3 right-3 bg-gradient-to-r from-pink-500 to-red-400 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+                              For Dating
+                            </span>
+                          ) : (
+                            <span className={`absolute top-3 right-3 text-xs font-bold px-3 py-1 rounded-full z-10 ${
+                              pet.listingType === 'adoption' 
+                                ? 'bg-green-500/90 text-white' 
+                                : 'bg-blue-500/90 text-white'
+                            }`}>
+                              {pet.listingType === 'adoption' ? 'For Adoption' : 'For Sale'}
+                            </span>
+                          )}
                         </div>
+                           
                         <h4 className="text-xl font-bold text-gold mb-2">{pet.name}</h4>
                         <p className="mb-1"><span className="text-gold/80">Type:</span> {pet.type}</p>
                         <p className="mb-1"><span className="text-gold/80">Breed:</span> {pet.breed}</p>
                         <p className="mb-3"><span className="text-gold/80">Age:</span> {pet.age} years</p>
+                        
                         <div className="flex space-x-2">
                           <button 
                             
@@ -251,9 +295,7 @@ const UserProfile = () => {
                     {/* Add Pet Card */}
                     <div className="bg-navy/30 p-6 rounded-xl border border-gold/20 border-dashed flex flex-col items-center justify-center text-center min-h-[300px] cursor-pointer hover:bg-navy/40 transition-all duration-300">
                       <div 
-                       onClick={()=>{
-                      navigate("/add-pet")
-                       }}
+                       onClick={handleAddPetClick}
                       className="w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center mb-4">
                         <span className="text-3xl text-gold">+</span>
                       </div>
@@ -299,6 +341,55 @@ const UserProfile = () => {
         </div>
       </section>
     </div>
+    
+
+     <div>
+      {/* Add Pet Popup */}
+      {showAddPetPopup && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-navy/95 backdrop-blur-md rounded-3xl p-8 max-w-md w-full border-2 border-gold/30"
+          >
+            <h3 className="text-2xl font-bold text-gold mb-6 text-center">Add Your Pet</h3>
+            <p className="text-white/80 mb-8 text-center">What type of listing would you like to create?</p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <button 
+                onClick={() => navigateToAddPet(false)}
+                className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white p-6 rounded-xl flex flex-col items-center justify-center gap-3 transition-all duration-300 hover:shadow-lg"
+              >
+                <span className="text-3xl">🏠</span>
+                <span className="font-bold">For Sale/Adoption</span>
+                <span className="text-xs text-white/80">Find a new home for your pet</span>
+              </button>
+              
+              <button 
+                onClick={() => navigateToAddPet(true)}
+                className="bg-gradient-to-r from-pink-500 to-red-400 hover:from-pink-600 hover:to-red-500 text-white p-6 rounded-xl flex flex-col items-center justify-center gap-3 transition-all duration-300 hover:shadow-lg"
+              >
+                <span className="text-3xl">❤️</span>
+                <span className="font-bold">Pet Dating</span>
+                <span className="text-xs text-white/80">Find a match for your pet</span>
+              </button>
+            </div>
+            
+            <div className="text-center">
+              <button 
+                onClick={handlePopupClose}
+                className="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-full font-medium transition-all duration-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )} 
+      
+    
+    </div>
+  </>
   );
 };
 

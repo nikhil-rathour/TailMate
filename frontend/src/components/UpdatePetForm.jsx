@@ -128,7 +128,7 @@ const UpdatePetForm = () => {
           transition={{ duration: 0.6 }}
           className="flex flex-col justify-center items-center text-center z-10"
         >
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight drop-shadow-lg">Update Pet Listing</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight drop-shadow-lg">Update Pet Informaton</h1>
           <p className="text-lg md:text-xl mb-4 text-gold font-medium drop-shadow">Update your pet's information</p>
         </motion.div>
         <div className="absolute right-0 bottom-0 w-1/2 h-full bg-[url('https://images.unsplash.com/photo-1601758123927-195e4b9f6e0e')] bg-cover bg-center opacity-20 z-0" />
@@ -244,23 +244,26 @@ const UpdatePetForm = () => {
             </div>
             {/* Image URL */}
          
-            {/* Listing Type */}
-            <div>
-              <label className="block text-gold mb-2 font-medium">Listing Type *</label>
-              <select
-                name="listingType"
-                value={formData.listingType}
-                onChange={handleChange}
-                className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
-                required
-              >
-                {listingTypes.map(type => (
-                  <option key={type.value} value={type.value}>{type.label}</option>
-                ))}
-              </select>
-            </div>
-            {/* Price (only for sale listings) */}
-            {formData.listingType === 'sale' && (
+            {/* Listing Type - only show if isDating is false */}
+            {!formData.isDating && (
+              <div>
+                <label className="block text-gold mb-2 font-medium">Listing Type *</label>
+                <select
+                  name="listingType"
+                  value={formData.listingType}
+                  onChange={handleChange}
+                  className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
+                  required
+                >
+                  {listingTypes.map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+            
+            {/* Price (only for sale listings and not dating) */}
+            {formData.listingType === 'sale' && !formData.isDating && (
               <div>
                 <label className="block text-gold mb-2 font-medium">Price ($) *</label>
                 <input
@@ -335,4 +338,4 @@ const UpdatePetForm = () => {
   );
 };
 
-export default UpdatePetForm; 
+export default UpdatePetForm;

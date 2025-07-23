@@ -251,7 +251,7 @@ const CreateDatingPetpost = () => {
               />
             </div>
             
-            {/* Listing Type */}
+            {/* Listing Type 
             <div>
               <label className="block text-gold mb-2 font-medium">Listing Type *</label>
               <select
@@ -265,9 +265,9 @@ const CreateDatingPetpost = () => {
                   <option key={type.value} value={type.value}>{type.label}</option>
                 ))}
               </select>
-            </div>
-            
-            {/* Price (only for sale listings) */}
+            </div> */
+
+            /* Price (only for sale listings)
             {formData.listingType === 'sale' && (
               <div>
                 <label className="block text-gold mb-2 font-medium">Price ($) *</label>
@@ -282,8 +282,9 @@ const CreateDatingPetpost = () => {
                   required
                 />
               </div>
-            )}
-          </div>
+            )} */}
+
+          </div> 
           
           {/* Description */}
           <div className="mt-6">

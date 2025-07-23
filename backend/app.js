@@ -21,6 +21,9 @@ app.use("/maps" , mapRoute)
 app.use("/api", aidoctorRoute)
 app.use("/api/auth", authRoutes);
 app.use("/api/pets", petRoutes);
+app.use("/api/dating-pets", petRoutes);
+
+
 
 
 app.get("/", (req , res)=>{

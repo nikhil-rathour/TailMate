@@ -66,6 +66,11 @@ const petsSchema = mongoose.Schema(
         type: Date,
          default: Date.now 
         },
+
+        isDating:{
+            type : Boolean,
+            default : false
+        }
   },
   {
     timestamps: true,

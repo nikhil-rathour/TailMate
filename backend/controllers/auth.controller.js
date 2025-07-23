@@ -41,7 +41,41 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+// Get user by userId (email prefix)
+const getUserByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Find user where email starts with userId
+    const user = await User.findOne({ 
+      email: new RegExp(`^${userId}@`, 'i') 
+    });
+    
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        error: "User not found" 
+      });
+    }
+    
+    return res.status(200).json({ 
+      success: true, 
+      user: {
+        name: user.name || userId,
+        picture: user.picture || 'https://via.placeholder.com/150'
+      }
+    });
+  } catch (err) {
+    console.error("Error fetching user by userId", err);
+    return res.status(500).json({ 
+      success: false, 
+      error: "Server error" 
+    });
+  }
+};
+
 module.exports = {
   googleAuth,
-  getCurrentUser
+  getCurrentUser,
+  getUserByUserId
 };

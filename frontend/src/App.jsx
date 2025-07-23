@@ -1,24 +1,26 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import AiPetCare from "./pages/AiPetCare";
-import Doctor from "./pages/Doctor";
-import Marketplace from "./pages/Marketplace";
-import PetSection from "./pages/PetSection.jsx";
-import PetDating from "./pages/PetDating";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Help from "./pages/Help";
-import useLenis from "./hooks/useLenis";
-import UserProfile from "./pages/UserProfile";
-import Login from "./pages/Login.jsx";
-import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import CreatePetpost from "./components/CreatePetpost.jsx";
-import ViewPet from "./components/ViewPet.jsx";
-import UpdatePetForm from "./components/UpdatePetForm.jsx";
-import CreateDatingPetpost from "./components/CreateDatingPetPost.jsx";
-import ViewDatingPet from "./components/ViewDatingPet.jsx";
-import { LikeProvider } from "./context/LikeContext.jsx";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import AiPetCare from './pages/AiPetCare'
+import Doctor from './pages/Doctor'
+import Marketplace from './pages/Marketplace'
+import PetSection from './pages/PetSection.jsx'
+import PetDating from './pages/PetDating'
+import Header from './components/Header'
+import Footer from './components/Footer'
+import Help from './pages/Help'
+import useLenis from './hooks/useLenis'
+import UserProfile from './pages/UserProfile'
+import Login from './pages/Login.jsx'
+import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import CreatePetpost from './components/CreatePetpost.jsx'
+import ViewPet from './components/ViewPet.jsx'
+import UpdatePetForm from './components/UpdatePetForm.jsx'
+import CreateDatingPetpost from './components/CreateDatingPetPost.jsx'
+import ViewDatingPet from './components/ViewDatingPet.jsx'
+import Chat from './components/Chat/Chat.jsx'
+import ChatPage from './components/Chat/ChatPage.jsx'
+import { LikeProvider } from './context/LikeContext.jsx'
 
 export default function App() {
   useLenis();
@@ -112,27 +114,34 @@ export default function App() {
                 }
               />
 
-              <Route
-                path="/create-dating-pet"
-                element={
-                  <ProtectedRoute>
-                    <CreateDatingPetpost />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/view-dating-pet/:petId"
-                element={
-                  <ProtectedRoute>
-                    <ViewDatingPet />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+            <Route path="/create-dating-pet" element={
+              <ProtectedRoute>
+                <CreateDatingPetpost/>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/view-dating-pet/:petId" element={
+              <ProtectedRoute>
+                <ViewDatingPet />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/chat/:receiverId" element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/chats" element={
+              <ProtectedRoute>
+                <ChatPage />
+              </ProtectedRoute>
+            } />
+              
+          </Routes>
+        </main>
+        <Footer />
+      </div>
       </LikeProvider>
     </AuthProvider>
   );

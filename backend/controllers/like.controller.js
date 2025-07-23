@@ -5,6 +5,14 @@ const addLike = async (req, res) => {
     try {
         const { userId, postId } = req.body;
          console.log("like" , req.body)
+
+         const check = await likeService.isLikedByUser(userId, postId);
+
+         console.log("check" , check)
+
+         if(check) {
+             throw new Error("You have already liked this post")
+         }
         const like = await likeService.createLike(userId, postId);
 
        

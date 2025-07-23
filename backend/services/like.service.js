@@ -14,6 +14,15 @@ const deleteLike = async(userId, postId) => {
     return await like.findOneAndDelete({userId, postId});
 }
 
+const isLikedByUser = async(userId, postId) => {
+    const isLiked = await like.findOne({userId, postId});
+
+    console.log("isLiked", isLiked)
+
+    if(isLiked) return true;
+    return false;
+}
+
 const listAllLikes = async (userId) => {
   const allLikes = await like.find({ userId })
     .populate("postId"); // This will populate Pet (post) details
@@ -23,5 +32,6 @@ const listAllLikes = async (userId) => {
 module.exports = {
     createLike,
     deleteLike,
-    listAllLikes
+    listAllLikes,
+    isLikedByUser
 }

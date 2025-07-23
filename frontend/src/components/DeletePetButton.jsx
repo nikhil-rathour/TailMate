@@ -23,7 +23,7 @@ const DeletePetButton = ({ petId, onDelete, petName }) => {
   return (
     <>
       <button
-        className="bg-red-500/70 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs shadow-lg transition"
+        className="bg-red-500/70 hover:bg-red-600  px-3 py-1 rounded-full shadow-lg transition w-28 font-bold text-navy"
         onClick={() => setShowConfirm(true)}
         disabled={loading}
       >

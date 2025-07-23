@@ -288,7 +288,7 @@ const PetSection = () => {
                     <h3 className="font-bold text-xl mb-2 text-gold">{pet.name}</h3>
                     <p className="text-white/80 text-sm mb-1">{pet.breed}</p>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-white/70">{pet.gender}, {pet.age} years</span>
+                      <span className="text-white/70">{pet.gender}, {pet.age} weeks</span>
                       <span className="text-white/60 text-sm">{pet.location}</span>
                     </div>
                     <div className="flex justify-between items-center mb-4">

@@ -210,7 +210,7 @@ const CreatePetpost = () => {
             
             {/* Age */}
             <div>
-              <label className="block text-gold mb-2 font-medium">Age (years) *</label>
+              <label className="block text-gold mb-2 font-medium">Age (weeks) *</label>
               <input
                 type="number"
                 name="age"

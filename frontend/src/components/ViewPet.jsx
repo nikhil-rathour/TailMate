@@ -141,7 +141,7 @@ const ViewPet = () => {
                   </div>
                   <div>
                     <p className="text-softgray">Age</p>
-                    <p className="font-semibold">{pet?.data.age} years</p>
+                    <p className="font-semibold">{pet?.data.age} weeks</p>
                   </div>
                   <div>
                     <p className="text-softgray">Gender</p>

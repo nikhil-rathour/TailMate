@@ -208,7 +208,7 @@ export default function AiPetCare() {
                   </motion.div>
                   
                   <motion.div variants={itemVariants}>
-                    <label className="block text-gold mb-2 font-medium">Age (years)</label>
+                    <label className="block text-gold mb-2 font-medium">Age (weeks)</label>
                     <input
                       type="number"
                       name="petAge"

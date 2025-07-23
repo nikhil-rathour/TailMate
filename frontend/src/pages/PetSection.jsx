@@ -335,7 +335,7 @@ const PetSection = () => {
                       )}
 
                       <FiHeart
-                        className={`absolute top-4 left-4 text-gold ${
+                        className={`absolute top-4 left-4 text-gold cursor-pointer ${
                           isLiked ? "fill-red-500" : ""
                         }`}
                         onClick={() => handleLike(pet._id, isLiked)}

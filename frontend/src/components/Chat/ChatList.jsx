@@ -114,14 +114,14 @@ const ChatList = () => {
       {/* Chat Icon with Notification Badge */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-white hover:text-gold transition"
+        className="relative p-2 text-white hover:text-gold transition-colors duration-200 transform hover:scale-110"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
         
         {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          <span className="absolute top-0 right-0 bg-gold text-navy text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-md animate-pulse">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -129,14 +129,15 @@ const ChatList = () => {
       
       {/* Chat Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-navy/95 rounded-xl shadow-xl z-50 border border-navy/30 overflow-hidden">
-          <div className="p-3 border-b border-navy/30">
+        <div className="absolute right-0 mt-2 w-80 bg-navy/95 rounded-xl shadow-xl z-50 border border-gold/20 overflow-hidden transition-all duration-300 transform origin-top-right animate-dropdown hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+          <div className="p-3 border-b border-navy/30 bg-navy/80">
             <h3 className="font-bold text-gold">Messages</h3>
           </div>
           
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gold/30 scrollbar-track-navy/20">
             {loading ? (
-              <div className="p-4 text-center">
+              <div className="p-6 text-center flex flex-col items-center">
+                <div className="w-8 h-8 border-4 border-gold/30 border-t-gold rounded-full animate-spin mb-2"></div>
                 <p className="text-softgray">Loading chats...</p>
               </div>
             ) : error ? (
@@ -144,7 +145,10 @@ const ChatList = () => {
                 <p className="text-red-400">{error}</p>
               </div>
             ) : chats.length === 0 ? (
-              <div className="p-4 text-center">
+              <div className="p-6 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gold/50 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
                 <p className="text-softgray">No messages yet</p>
               </div>
             ) : (
@@ -158,22 +162,20 @@ const ChatList = () => {
                     receiverImage: chat.userImage || 'https://via.placeholder.com/150'
                   }}
                   onClick={() => setIsOpen(false)}
-                  className={`block p-3 hover:bg-navy/70 transition ${
-                    chat.unreadCount > 0 ? 'bg-navy/50' : ''
-                  }`}
+                  className={`block p-3 hover:bg-navy/70 transition-all duration-200 border-l-2 ${chat.unreadCount > 0 ? 'bg-navy/50 border-l-gold' : 'border-l-transparent'} hover:border-l-gold/50`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-lightgray overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-lightgray overflow-hidden border border-gold/20 shadow-md hover:border-gold/50 transition-colors duration-200">
                       <img
                         src={chat.userImage || "https://via.placeholder.com/150"}
                         alt={chat.userName || chat.userId}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                       />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0"> {/* min-width prevents flex item from overflowing */}
                       <div className="flex justify-between items-center">
-                        <h4 className="font-medium">{chat.userName || chat.userId}</h4>
-                        <span className="text-xs text-softgray">
+                        <h4 className="font-medium text-gold truncate">{chat.userName || chat.userId}</h4>
+                        <span className="text-xs text-softgray whitespace-nowrap ml-1">
                           {formatTime(chat.lastMessageTime)}
                         </span>
                       </div>
@@ -182,7 +184,7 @@ const ChatList = () => {
                       </p>
                     </div>
                     {chat.unreadCount > 0 && (
-                      <span className="bg-gold text-navy text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      <span className="bg-gold text-navy text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-md flex-shrink-0">
                         {chat.unreadCount > 9 ? '9+' : chat.unreadCount}
                       </span>
                     )}
@@ -192,13 +194,16 @@ const ChatList = () => {
             )}
           </div>
           
-          <div className="p-3 border-t border-navy/30 text-center">
+          <div className="p-3 border-t border-navy/30 text-center bg-navy/80">
             <Link
               to="/chats"
               onClick={() => setIsOpen(false)}
-              className="text-gold hover:text-accent-orange text-sm font-medium"
+              className="text-gold hover:text-accent-orange text-sm font-medium transition-colors duration-200 inline-flex items-center"
             >
               See all messages
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
             </Link>
           </div>
         </div>

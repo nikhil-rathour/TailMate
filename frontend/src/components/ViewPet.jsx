@@ -212,7 +212,7 @@ const ViewPet = () => {
                       }}
                       className="bg-gold hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold shadow-lg transition flex-1"
                     >
-                      Contact Owner
+                      Connect With Owner
                     </button>
                     <button className="bg-white hover:bg-beige text-navy px-6 py-2 rounded-full font-bold shadow-lg transition flex-1">Save Pet</button>
                   </>

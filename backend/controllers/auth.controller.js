@@ -27,10 +27,13 @@ const googleAuth = async (req, res) => {
 // Get current user
 const getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findOne({ uid: req.user.uid });
+
+    const user = await User.findOne({ uid: req.params.uid });
     if (!user) {
       return res.status(404).json({ success: false, error: "User not found" });
     }
+
+    console.log("User found:", user);
     return res.status(200).json({ success: true, user });
   } catch (err) {
     console.error("Error fetching user", err);

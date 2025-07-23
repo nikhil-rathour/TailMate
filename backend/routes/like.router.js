@@ -5,5 +5,5 @@ const { verifyToken } = require("../middleware/auth.middleware");
 
 router.post("/add-like", likeController.addLike);
 router.delete("/delete-like", likeController.deleteLike);
-router.get("/list-all-likes", likeController.getAllLikes);
+router.get("/list-all-likes/:id", likeController.getAllLikes);
 module.exports = router

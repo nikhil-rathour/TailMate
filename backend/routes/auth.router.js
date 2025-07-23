@@ -7,7 +7,6 @@ const { verifyToken } = require("../middleware/auth.middleware");
 router.post("/google", googleAuth);
 
 // Protected routes
-router.get("/me/:uid", verifyToken, getCurrentUser);
 router.get("/me", verifyToken, getCurrentUser);
 router.get("/user/:userId", verifyToken, getUserByUserId);
 

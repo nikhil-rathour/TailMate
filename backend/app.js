@@ -7,13 +7,17 @@ const mapRoute = require("./routes/maps.router")
 const likeRoute = require("./routes/like.router")
 const aidoctorRoute = require("./routes/aidoctor.router")
 const petRoutes=  require("./routes/pet.router")
+const chatRoutes = require("./routes/chat.router")
 const cors = require("cors")
 const authRoutes = require("./routes/auth.router");
 
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use(cors())
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+}))
 connectDB()
 
 //routers 
@@ -26,6 +30,7 @@ app.use("/api/dating-pets", petRoutes);
 
 
 app.use("/api/likes", likeRoute);
+app.use("/api/chats", chatRoutes);
 
 
 app.get("/", (req , res)=>{

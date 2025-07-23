@@ -18,6 +18,8 @@ import ViewPet from './components/ViewPet.jsx'
 import UpdatePetForm from './components/UpdatePetForm.jsx'
 import CreateDatingPetpost from './components/CreateDatingPetPost.jsx'
 import ViewDatingPet from './components/ViewDatingPet.jsx'
+import Chat from './components/Chat/Chat.jsx'
+import ChatPage from './components/Chat/ChatPage.jsx'
 
 export default function App() {
   useLenis()
@@ -92,6 +94,18 @@ export default function App() {
             <Route path="/view-dating-pet/:petId" element={
               <ProtectedRoute>
                 <ViewDatingPet />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/chat/:receiverId" element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/chats" element={
+              <ProtectedRoute>
+                <ChatPage />
               </ProtectedRoute>
             } />
               

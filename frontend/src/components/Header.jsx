@@ -1,5 +1,6 @@
 import { Link, NavLink } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import ChatList from "./Chat/ChatList";
 
 export default function Header() {
   const { currentUser, userInfo, logout } = useAuth();
@@ -149,6 +150,9 @@ export default function Header() {
               <circle cx="17" cy="20" r="1" fill="currentColor" />
             </svg>
           </button>
+          
+          {/* Chat Icon with Dropdown */}
+          {currentUser && <ChatList />}
 
           {/* User Avatar/Login */}
           {currentUser ? (

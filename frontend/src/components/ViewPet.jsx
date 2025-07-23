@@ -175,7 +175,45 @@ const ViewPet = () => {
                   </>
                 ) : (
                   <>
-                    <button className="bg-gold hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold shadow-lg transition flex-1">Contact Owner</button>
+                    <button 
+                      onClick={() => {
+                        if (!currentUser) {
+                          navigate('/login');
+                          return;
+                        }
+                        
+                        const receiverId = pet.data.ownerEmail.split('@')[0];
+                        let receiverName = 'Pet Owner';
+                        let receiverImage = 'https://via.placeholder.com/150';
+                        
+                        try {
+                          if (typeof pet.data.ownerData === 'string') {
+                            const ownerData = JSON.parse(pet.data.ownerData);
+                            receiverName = ownerData?.name || 'Pet Owner';
+                            receiverImage = ownerData?.picture || 'https://via.placeholder.com/150';
+                          } else if (pet.data.ownerData) {
+                            receiverName = pet.data.ownerData.name || 'Pet Owner';
+                            receiverImage = pet.data.ownerData.picture || 'https://via.placeholder.com/150';
+                          }
+                        } catch (err) {
+                          console.error('Error parsing owner data:', err);
+                        }
+                        
+                        navigate(`/chat/${receiverId}`, { 
+                          state: { 
+                            receiverId, 
+                            receiverName,
+                            receiverImage,
+                            petId: pet.data._id,
+                            petName: pet.data.name,
+                            petImage: pet.data.img
+                          }
+                        });
+                      }}
+                      className="bg-gold hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold shadow-lg transition flex-1"
+                    >
+                      Contact Owner
+                    </button>
                     <button className="bg-white hover:bg-beige text-navy px-6 py-2 rounded-full font-bold shadow-lg transition flex-1">Save Pet</button>
                   </>
                 )}

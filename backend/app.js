@@ -4,6 +4,7 @@ const connectDB = require("./db/db")
 require("dotenv").config()
 const aiPetCareRoute = require("./routes/aiPetCare.route")
 const mapRoute = require("./routes/maps.router")
+const likeRoute = require("./routes/like.router")
 const aidoctorRoute = require("./routes/aidoctor.router")
 const petRoutes=  require("./routes/pet.router")
 const cors = require("cors")
@@ -21,6 +22,7 @@ app.use("/maps" , mapRoute)
 app.use("/api", aidoctorRoute)
 app.use("/api/auth", authRoutes);
 app.use("/api/pets", petRoutes);
+app.use("/api/likes", likeRoute);
 
 
 app.get("/", (req , res)=>{

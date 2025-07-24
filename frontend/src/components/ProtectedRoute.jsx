@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 export default function ProtectedRoute({ children }) {
   const { currentUser, loading } = useAuth();
 
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[70vh]">

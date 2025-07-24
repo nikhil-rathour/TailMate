@@ -177,11 +177,11 @@ const ViewDatingPet = () => {
                     </div>
                   ) : (
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-navy/70 overflow-hidden flex items-center justify-center">
-                        {pet.ownerData?.picture ? (
+                      <div className="w-16 h-16 rounded-full bg-navy/70 overflow-hidden flex items-center justify-center border border-gold/20">
+                        {pet.ownerData ? (
                           <img 
-                            src={typeof pet.ownerData === 'string' ? JSON.parse(pet.ownerData)?.picture : pet.ownerData?.picture} 
-                            alt="Owner" 
+                            src={typeof pet.ownerData === 'string' ? JSON.parse(pet.ownerData)?.picture : pet.ownerData?.picture || 'https://via.placeholder.com/150'} 
+                            alt={typeof pet.ownerData === 'string' ? JSON.parse(pet.ownerData)?.name : pet.ownerData?.name || 'Pet Owner'} 
                             className="w-full h-full object-cover"
                           />
                         ) : (
@@ -189,7 +189,7 @@ const ViewDatingPet = () => {
                         )}
                       </div>
                       <div>
-                        <p className="font-bold text-lg">
+                        <p className="font-bold text-lg text-gold">
                           {typeof pet.ownerData === 'string' ? JSON.parse(pet.ownerData)?.name : pet.ownerData?.name || 'Pet Owner'}
                         </p>
                         <p className="text-white/60 text-sm">{pet.ownerEmail || 'N/A'}</p>
@@ -212,6 +212,40 @@ const ViewDatingPet = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          if (!currentUser) {
+                            navigate('/login');
+                            return;
+                          }
+                          
+                          const receiverId = pet.ownerEmail.split('@')[0];
+                          let receiverName = 'Pet Owner';
+                          let receiverImage = 'https://via.placeholder.com/150';
+                          
+                          try {
+                            if (typeof pet.ownerData === 'string') {
+                              const ownerData = JSON.parse(pet.ownerData);
+                              receiverName = ownerData?.name || 'Pet Owner';
+                              receiverImage = ownerData?.picture || 'https://via.placeholder.com/150';
+                            } else if (pet.ownerData) {
+                              receiverName = pet.ownerData.name || 'Pet Owner';
+                              receiverImage = pet.ownerData.picture || 'https://via.placeholder.com/150';
+                            }
+                          } catch (err) {
+                            console.error('Error parsing owner data:', err);
+                          }
+                          
+                          navigate(`/chat/${receiverId}`, { 
+                            state: { 
+                              receiverId, 
+                              receiverName,
+                              receiverImage,
+                              petId: pet._id,
+                              petName: pet.name,
+                              petImage: pet.img
+                            }
+                          });
+                        }}
                         className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 transition-all duration-300"
                       >
                         <FiMail /> Contact Owner
@@ -220,6 +254,7 @@ const ViewDatingPet = () => {
                   )}
                   
                   {isOwner && (
+                   <>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -227,16 +262,22 @@ const ViewDatingPet = () => {
                       className="bg-gold hover:bg-accent-orange text-navy px-6 py-3 rounded-full font-bold flex items-center gap-2 transition-all duration-300"
                     >
                       Edit Pet
+                      
                     </motion.button>
 
-                    
-                  )}
-
-                      <DeletePetButton
+                        <DeletePetButton
                       petId={pet._id}
                       petName={pet.name}
                       onDelete={() => navigate('/dating')}
                     />
+
+                   </>
+                    
+
+                    
+                  )}
+
+                  
                 </div>
                 
               </div>

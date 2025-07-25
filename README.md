@@ -28,3 +28,12 @@ TailMate uses Firebase Authentication for user management. The authentication fl
 - `backend/middleware/auth.middleware.js`: Token verification middleware
 - `backend/controllers/auth.controller.js`: Authentication logic
 - `backend/routes/auth.router.js`: Authentication endpoints
+
+
+
+
+
+
+
+
+

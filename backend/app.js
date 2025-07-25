@@ -11,6 +11,8 @@ const chatRoutes = require("./routes/chat.router")
 const cors = require("cors")
 const authRoutes = require("./routes/auth.router");
 
+const storyRoute = require("./routes/story.route") 
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -24,10 +26,9 @@ app.use("/api", aidoctorRoute)
 app.use("/api/auth", authRoutes);
 app.use("/api/pets", petRoutes);
 app.use("/api/dating-pets", petRoutes);
-
-
 app.use("/api/likes", likeRoute);
 app.use("/api/chats", chatRoutes);
+app.use("/api/stories", storyRoute);
 
 
 app.get("/", (req , res)=>{

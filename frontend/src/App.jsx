@@ -21,6 +21,7 @@ import ViewDatingPet from './components/ViewDatingPet.jsx'
 import Chat from './components/Chat/Chat.jsx'
 import ChatPage from './components/Chat/ChatPage.jsx'
 import { LikeProvider } from './context/LikeContext.jsx'
+import Stories from './pages/Stories.jsx'
 
 export default function App() {
   useLenis();
@@ -136,6 +137,12 @@ export default function App() {
             <Route path="/chats" element={
               <ProtectedRoute>
                 <ChatPage />
+              </ProtectedRoute>
+            } />
+
+             <Route path="/stories" element={
+              <ProtectedRoute>
+                <Stories />
               </ProtectedRoute>
             } />
               

@@ -205,6 +205,7 @@ const UserProfile = () => {
                 >
                   My Pets
                 </button>
+              
                 <button
                   onClick={() => setActiveTab("matches")}
                   className={`mr-4 py-2 px-4 font-medium text-sm border-b-2 ${

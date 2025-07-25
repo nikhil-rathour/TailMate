@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiHeart, FiX, FiMessageCircle, FiPlus, FiChevronLeft, FiChevronRight, FiUser } from "react-icons/fi";
+import { FiHeart, FiX, FiMessageCircle, FiPlus, FiChevronLeft, FiChevronRight, FiUser, FiMapPin } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { getAllOwnerDatingProfiles, likeOwnerProfile, passOwnerProfile, getMyOwnerDatingProfile } from "../services/ownerDatingService";
@@ -17,7 +17,6 @@ const Owenerdating = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState('swipe'); // 'swipe' or 'grid'
   
   // Filter states
   const [ageRange, setAgeRange] = useState({ min: 18, max: 60 });
@@ -48,6 +47,10 @@ const Owenerdating = () => {
     };
     checkUserProfile();
   }, [userInfo]);
+
+  console.log('userProfile:', userProfile?._id);
+
+  // Fetch profiles and pets on component mount
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -106,6 +109,9 @@ const Owenerdating = () => {
 
   // Apply filters to profiles
   const filteredProfiles = profiles.filter(profile => {
+    // Skip own profile
+    if (userProfile?._id === profile._id) return false;
+    
     // Age filter
     if (profile.OwnerAge < ageRange.min || profile.OwnerAge > ageRange.max) return false;
     
@@ -114,6 +120,12 @@ const Owenerdating = () => {
     
     return true;
   });
+
+  // Debug log to verify filtering
+  useEffect(() => {
+    console.log('Current user profile ID:', userProfile?._id);
+    console.log('Filtered profiles:', filteredProfiles.map(p => p._id));
+  }, [filteredProfiles, userProfile]);
 
   const handleSwipe = async (direction, profileId) => {
     setDirection(direction);
@@ -144,7 +156,6 @@ const Owenerdating = () => {
 
   const currentProfile = filteredProfiles[currentIndex];
   const isLastProfile = currentIndex === filteredProfiles.length - 1;
-
 
   return (
     <div className="bg-navy min-h-screen text-white pb-16">
@@ -186,24 +197,7 @@ const Owenerdating = () => {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gold">Find Your Match</h2>
           <div className="flex items-center gap-4">
-            <div className="flex bg-white/10 rounded-lg p-1">
-              <button
-                onClick={() => setViewMode('swipe')}
-                className={`px-3 py-1 rounded text-sm transition-all duration-300 ${
-                  viewMode === 'swipe' ? 'bg-gold text-navy' : 'text-white hover:bg-white/10'
-                }`}
-              >
-                Swipe
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`px-3 py-1 rounded text-sm transition-all duration-300 ${
-                  viewMode === 'grid' ? 'bg-gold text-navy' : 'text-white hover:bg-white/10'
-                }`}
-              >
-                Grid
-              </button>
-            </div>
+        
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300"
@@ -303,9 +297,9 @@ const Owenerdating = () => {
             <h3 className="text-xl font-semibold mb-2">No Matches Found</h3>
             <p className="text-white/70 mb-6">No profiles available at the moment.</p>
           </div>
-        ) : viewMode === 'swipe' ? (
-          // Swipe Mode
-          <div className="relative h-[60vh] max-h-[700px]">
+        ) : (
+          // Profile Cards Grid
+          <div className="space-y-8">
             <AnimatePresence>
               {currentProfile && (
                 <motion.div
@@ -314,80 +308,161 @@ const Owenerdating = () => {
                   animate={{ 
                     x: direction === "left" ? -300 : direction === "right" ? 300 : 0,
                     opacity: direction ? 0 : 1,
-                    rotateZ: direction === "left" ? -10 : direction === "right" ? 10 : 0
+                    rotateZ: direction === "left" ? -5 : direction === "right" ? 5 : 0
                   }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl border border-gold/20"
+                  className="bg-white/10 backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl border border-gold/20 max-w-4xl mx-auto"
                 >
-                  <div className="relative h-full flex flex-col">
-                    {/* Profile Image */}
-                    <div className="h-1/2 relative">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
+                    {/* Profile Image Section */}
+                    <div className="relative h-[400px] lg:h-full">
                       <img 
                         src={currentProfile.ProfilePicture} 
                         alt={currentProfile.user.name} 
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy to-transparent"></div>
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <h3 className="text-2xl font-bold text-white">{currentProfile.user.name}, {currentProfile.OwnerAge}</h3>
-                        <p className="text-white/80">{currentProfile.location}</p>
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent"></div>
+                      
+                      {/* Profile Header Info */}
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <div className="bg-black/30 backdrop-blur-sm rounded-xl p-4">
+                          <h3 className="text-3xl font-bold text-white mb-2">
+                            {currentProfile.user.name}, {currentProfile.OwnerAge}
+                          </h3>
+                          <div className="flex items-center gap-4 text-white/90">
+                            <div className="flex items-center gap-1">
+                              <FiMapPin className="text-gold" />
+                              <span>{currentProfile.location}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <FiUser className="text-gold" />
+                              <span className="capitalize">{currentProfile.gender}</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
-                    {/* Profile Info */}
-                    <div className="flex-1 p-6 overflow-y-auto">
-                      <p className="text-white/90 mb-4">{currentProfile.bio}</p>
-                      
-                      <h4 className="text-gold font-semibold mb-2">Interests</h4>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {currentProfile.interests?.map((interest, idx) => (
-                          <span 
-                            key={`interest-${idx}-${interest}`}
-                            className="px-3 py-1 bg-white/10 rounded-full text-sm"
-                          >
-                            {interest}
-                          </span>
-                        ))}
+                    {/* Profile Details Section */}
+                    <div className="p-8 flex flex-col">
+                      {/* Bio */}
+                      <div className="mb-6">
+                        <h4 className="text-xl font-semibold text-gold mb-3">About</h4>
+                        <p className="text-white/90 leading-relaxed line-clamp-3">
+                          {currentProfile.bio}
+                        </p>
                       </div>
                       
-                      <h4 className="text-gold font-semibold mb-2">Hobbies</h4>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {currentProfile.hobbies?.map((hobby, idx) => (
-                          <span 
-                            key={`hobby-${idx}-${hobby}`}
-                            className="px-3 py-1 bg-white/5 rounded-full text-sm"
-                          >
-                            {hobby}
-                          </span>
-                        ))}
+                      {/* Interests */}
+                      <div className="mb-6">
+                        <h4 className="text-lg font-semibold text-gold mb-3">Interests</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {currentProfile.interests?.slice(0, 6).map((interest, idx) => (
+                            <span 
+                              key={`interest-${idx}-${interest}`}
+                              className="px-3 py-1 bg-gold/20 text-gold rounded-full text-sm font-medium"
+                            >
+                              {interest}
+                            </span>
+                          ))}
+                          {currentProfile.interests?.length > 6 && (
+                            <span className="px-3 py-1 bg-white/10 text-white/70 rounded-full text-sm">
+                              +{currentProfile.interests.length - 6} more
+                            </span>
+                          )}
+                        </div>
                       </div>
                       
-                      <h4 className="text-gold font-semibold mb-2">Pets</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Hobbies */}
+                      <div className="mb-6">
+                        <h4 className="text-lg font-semibold text-gold mb-3">Hobbies</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {currentProfile.hobbies?.slice(0, 4).map((hobby, idx) => (
+                            <span 
+                              key={`hobby-${idx}-${hobby}`}
+                              className="px-3 py-1 bg-white/10 text-white rounded-full text-sm"
+                            >
+                              {hobby}
+                            </span>
+                          ))}
+                          {currentProfile.hobbies?.length > 4 && (
+                            <span className="px-3 py-1 bg-white/10 text-white/70 rounded-full text-sm">
+                              +{currentProfile.hobbies.length - 4} more
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Pets Preview */}
+                      <div className="mb-8">
+                        <h4 className="text-lg font-semibold text-gold mb-3">Pets</h4>
                         {Array.isArray(currentProfile.pets) && currentProfile.pets.length > 0 ? (
-                          currentProfile.pets.map((pet, idx) => (
-                            <div key={`pet-${idx}-${pet.name || idx}`} className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
-                              <img 
-                                src={pet.image || '/default-pet.png'}
-                                alt={pet.name}
-                                className="w-12 h-12 rounded-full object-cover border border-white/20"
-                                onError={(e) => {
-                                  e.target.src = 'https://via.placeholder.com/48x48/4A5568/FFFFFF?text=Pet';
-                                }}
-                              />
-                              <div>
-                                <p className="font-medium">{pet.name}</p>
-                                <p className="text-sm text-white/70">{pet.breed}, {pet.age} yr</p>
-                                <p className="text-xs text-white/50 capitalize">{pet.type}</p>
+                          <div className="grid grid-cols-1 gap-3">
+                            {currentProfile.pets.slice(0, 2).map((pet, idx) => (
+                              <div key={`pet-${idx}-${pet.name || idx}`} className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+                                <img 
+                                  src={pet.image || '/default-pet.png'}
+                                  alt={pet.name}
+                                  className="w-12 h-12 rounded-full object-cover border border-white/20"
+                                  onError={(e) => {
+                                    e.target.src = 'https://via.placeholder.com/48x48/4A5568/FFFFFF?text=Pet';
+                                  }}
+                                />
+                                <div>
+                                  <p className="font-medium text-white">{pet.name}</p>
+                                  <p className="text-sm text-white/70">{pet.breed}, {pet.age} yr</p>
+                                </div>
                               </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="col-span-2 text-center py-4">
-                            <p className="text-white/50 text-sm">No pets listed</p>
+                            ))}
+                            {currentProfile.pets.length > 2 && (
+                              <p className="text-sm text-white/60 text-center">
+                                +{currentProfile.pets.length - 2} more pets
+                              </p>
+                            )}
                           </div>
+                        ) : (
+                          <p className="text-white/50 text-sm">No pets listed</p>
                         )}
+                      </div>
+                      
+                      {/* Action Buttons */}
+                      <div className="mt-auto space-y-4">
+                        <button
+                          onClick={() => navigate(`/view-owner-dating-profile/${currentProfile._id}`)}
+                          className="w-full px-6 py-3 bg-gold/20 text-gold border border-gold/30 rounded-xl hover:bg-gold/30 transition-all duration-300 font-medium"
+                        >
+                          View Full Profile
+                        </button>
+                        
+                        <div className="flex gap-3">
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => handleSwipe("left", currentProfile._id)}
+                            className="flex-1 py-3 bg-red-500/20 text-red-300 border border-red-500/30 rounded-xl hover:bg-red-500/30 transition-all duration-300 flex items-center justify-center gap-2"
+                          >
+                            <FiX /> Pass
+                          </motion.button>
+                          
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => navigate(`/chat/${currentProfile._id}`)}
+                            className="px-4 py-3 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-xl hover:bg-blue-500/30 transition-all duration-300 flex items-center justify-center"
+                          >
+                            <FiMessageCircle />
+                          </motion.button>
+                          
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => handleSwipe("right", currentProfile._id)}
+                            className="flex-1 py-3 bg-green-500/20 text-green-300 border border-green-500/30 rounded-xl hover:bg-green-500/30 transition-all duration-300 flex items-center justify-center gap-2"
+                          >
+                            <FiHeart /> Like
+                          </motion.button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -395,77 +470,17 @@ const Owenerdating = () => {
               )}
             </AnimatePresence>
             
-            {/* Action Buttons */}
-            {!isLastProfile && currentProfile && (
-              <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-6 z-10">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => handleSwipe("left", currentProfile._id)}
-                  className="w-16 h-16 flex items-center justify-center bg-red-500 rounded-full shadow-lg"
-                >
-                  <FiX className="text-white text-2xl" />
-                </motion.button>
-                
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => navigate(`/chat/${currentProfile._id}`)}
-                  className="w-12 h-12 flex items-center justify-center bg-blue-500 rounded-full shadow-lg"
-                >
-                  <FiMessageCircle className="text-white text-xl" />
-                </motion.button>
-                
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => handleSwipe("right", currentProfile._id)}
-                  className="w-16 h-16 flex items-center justify-center bg-green-500 rounded-full shadow-lg"
-                >
-                  <FiHeart className="text-white text-2xl" />
-                </motion.button>
-              </div>
-            )}
-            
-            {/* Navigation Buttons */}
-            <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-4 z-0">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
-                disabled={currentIndex === 0}
-                className="w-10 h-10 flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full disabled:opacity-30"
-              >
-                <FiChevronLeft className="text-white" />
-              </motion.button>
-              
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setCurrentIndex(prev => Math.min(filteredProfiles.length - 1, prev + 1))}
-                disabled={isLastProfile}
-                className="w-10 h-10 flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full disabled:opacity-30"
-              >
-                <FiChevronRight className="text-white" />
-              </motion.button>
-            </div>
-            
-            {/* Profile Counter */}
-            <div className="absolute bottom-20 left-0 right-0 flex justify-center">
-              <div className="bg-white/10 backdrop-blur-sm px-4 py-1 rounded-full text-sm">
-                {currentIndex + 1} / {filteredProfiles.length}
-              </div>
-            </div>
+          
             
             {/* End of Profiles Message */}
             {isLastProfile && (
-              <div className="absolute inset-0 flex items-center justify-center bg-navy/80 backdrop-blur-sm rounded-3xl">
-                <div className="text-center p-6">
-                  <h3 className="text-2xl font-bold mb-2">You've seen all profiles!</h3>
-                  <p className="text-white/70 mb-6">Check back later for more matches or adjust your filters.</p>
+              <div className="fixed inset-0 flex items-center justify-center z-40 backdrop-blur-sm">
+                <div className="bg-white/5 rounded-lg p-6 text-center max-w-sm mx-4">
+                  <h3 className="text-lg font-semibold mb-2 text-white">All caught up!</h3>
+                  <p className="text-white/60 text-sm mb-4">No more profiles to show</p>
                   <button 
                     onClick={() => setCurrentIndex(0)}
-                    className="px-6 py-3 bg-gold text-navy rounded-lg hover:bg-accent-orange transition-all duration-300"
+                    className="px-4 py-2 bg-gold/80 text-navy rounded text-sm hover:bg-gold"
                   >
                     Start Over
                   </button>
@@ -473,118 +488,9 @@ const Owenerdating = () => {
               </div>
             )}
           </div>
-        ) : (
-          // Grid Mode
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProfiles.map((profile, profileIndex) => (
-              <motion.div
-                key={`profile-${profile._id}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: profileIndex * 0.1 }}
-                className="bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden shadow-xl border border-gold/20 hover:border-gold/40 transition-all duration-300"
-              >
-                {/* Profile Image */}
-                <div className="h-64 relative">
-                  <img 
-                    src={profile.ProfilePicture} 
-                    alt={profile.user.name} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-xl font-bold text-white">{profile.user.name}, {profile.OwnerAge}</h3>
-                    <p className="text-white/80 text-sm">{profile.location}</p>
-                  </div>
-                </div>
-                
-                {/* Profile Info */}
-                <div className="p-4">
-                  <p className="text-white/90 text-sm mb-3 line-clamp-2">{profile.bio}</p>
-                  
-                  <div className="mb-3">
-                    <h4 className="text-gold font-semibold text-sm mb-1">Interests</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {profile.interests?.slice(0, 3).map((interest, interestIdx) => (
-                        <span 
-                          key={`grid-interest-${profileIndex}-${interestIdx}-${interest}`}
-                          className="px-2 py-1 bg-white/10 rounded-full text-xs"
-                        >
-                          {interest}
-                        </span>
-                      ))}
-                      {profile.interests?.length > 3 && (
-                        <span className="px-2 py-1 bg-white/5 rounded-full text-xs text-white/60">
-                          +{profile.interests.length - 3} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <h4 className="text-gold font-semibold text-sm mb-1">Hobbies</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {profile.hobbies?.slice(0, 2).map((hobby, hobbyIdx) => (
-                        <span 
-                          key={`grid-hobby-${profileIndex}-${hobbyIdx}-${hobby}`}
-                          className="px-2 py-1 bg-white/5 rounded-full text-xs"
-                        >
-                          {hobby}
-                        </span>
-                      ))}
-                      {profile.hobbies?.length > 2 && (
-                        <span className="px-2 py-1 bg-white/5 rounded-full text-xs text-white/60">
-                          +{profile.hobbies.length - 2} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Action Buttons */}
-                  <div className="flex justify-between gap-2">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => passOwnerProfile(profile._id)}
-                      className="flex-1 flex items-center justify-center gap-2 py-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-all duration-300"
-                    >
-                      <FiX className="text-sm" />
-                      <span className="text-sm">Pass</span>
-                    </motion.button>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => navigate(`/chat/${profile._id}`)}
-                      className="px-3 py-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-all duration-300"
-                    >
-                      <FiMessageCircle className="text-sm" />
-                    </motion.button>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={async () => {
-                        try {
-                          const result = await likeOwnerProfile(profile._id);
-                          if (result.data.match) {
-                            alert("It's a match! 🎉");
-                          }
-                        } catch (error) {
-                          console.error('Error liking profile:', error);
-                        }
-                      }}
-                      className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30 transition-all duration-300"
-                    >
-                      <FiHeart className="text-sm" />
-                      <span className="text-sm">Like</span>
-                    </motion.button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         )}
+    
+
       </section>
     </div>
   );

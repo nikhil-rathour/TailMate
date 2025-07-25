@@ -155,7 +155,13 @@ export default function App() {
               </ProtectedRoute>
             } />
 
-           <Route path="/view-owner-dating-profile/:_id" element={
+           <Route path="/view-owner-dating-profile" element={
+              <ProtectedRoute>
+                <ViewOwnerDatingProfile/>
+              </ProtectedRoute>
+            } />
+            
+           <Route path="/view-owner-dating-profile/:profileId" element={
               <ProtectedRoute>
                 <ViewOwnerDatingProfile/>
               </ProtectedRoute>

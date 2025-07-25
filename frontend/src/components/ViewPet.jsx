@@ -327,7 +327,7 @@ const ViewPet = () => {
             </div>
           ) : ownerPets && ownerPets.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              {ownerPets.filter(ownerPet => ownerPet._id !== pet.data._id).map((ownerPet) => (
+              {ownerPets.filter(ownerPet => ownerPet._id !== pet.data._id && ownerPet.isDating === false).map((ownerPet) => (
                 <Link to={`/view-pet/${ownerPet._id}`} key={ownerPet._id} className="bg-navy/70 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition">
                   <div className="h-40 bg-lightgray">
                     <img 

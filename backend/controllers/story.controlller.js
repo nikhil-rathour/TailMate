@@ -2,15 +2,21 @@ const storyService = require("../services/story.service");
 
 
 const createStory = async (req, res) => {
-    try {
-        const storyData = req.body;
-        console.log(storyData);
-        const story = await storyService.createStory(storyData);
-        res.status(201).json({ success: true, message: "Story created successfully", data: story });
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+  try {
+    const storyData = req.body;
+
+    if (!storyData.userId || !storyData.title || !storyData.header || !storyData.content) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
     }
+
+    const story = await storyService.createStory(storyData);
+    res.status(201).json({ success: true, message: "Story created successfully", data: story });
+  } catch (error) {
+    console.error("Backend Error:", error);
+    res.status(500).json({ success: false, message: error.message || "Internal Server Error" });
+  }
 };
+
 
 const getAllStories = async (req, res) => {
     try {

@@ -5,7 +5,7 @@ import { getPetsByOwnerEmail } from "../services/petService";
 import DeletePetButton from "../components/DeletePetButton";
 import { motion } from "framer-motion";
 import LikeComponent from "../components/profile/like";
-import { getMatches } from "../services/matchService";
+import { getMatches, deleteMatch } from "../services/matchService";
 
 const UserProfile = () => {
   const { currentUser, userInfo, loading, logout } = useAuth();
@@ -447,12 +447,29 @@ const UserProfile = () => {
                               <p className="text-xs text-white/50 mb-4">
                                 Matched on {new Date(match.createdAt).toLocaleDateString()}
                               </p>
-                              <button 
-                                onClick={() => navigate(`/view-owner-dating-profile/${match.matchUserId}`)}
-                                className="bg-gold hover:bg-accent-orange text-navy px-4 py-2 rounded-full font-bold text-sm shadow-lg transition w-full"
-                              >
-                                View Profile
-                              </button>
+                              <div className="flex gap-2">
+                                <button 
+                                  onClick={() => navigate(`/view-owner-dating-profile/${match.matchUserId}`)}
+                                  className="flex-1 bg-gold hover:bg-accent-orange text-navy px-3 py-2 rounded-full font-bold text-sm shadow-lg transition"
+                                >
+                                  View Profile
+                                </button>
+                                <button 
+                                  onClick={async () => {
+                                    try {
+                                      const token = await currentUser.getIdToken();
+                                      const matchedUserId = match.currentUserId === userInfo?.uid ? match.matchUserId : match.currentUserId;
+                                      await deleteMatch(matchedUserId, token);
+                                      setMatches(matches.filter(m => m._id !== match._id));
+                                    } catch (error) {
+                                      console.error('Error deleting match:', error);
+                                    }
+                                  }}
+                                  className="bg-red-500/20 hover:bg-red-500/30 text-red-300 px-3 py-2 rounded-full font-bold text-sm shadow-lg transition"
+                                >
+                                  ✕
+                                </button>
+                              </div>
                             </div>
                           </div>
                         );

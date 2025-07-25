@@ -87,6 +87,11 @@ const CreatePetpost = () => {
       return;
     }
 
+    if (isNaN(formData.age) || Number(formData.age) < 1 || String(formData.age).length > 4) {
+      setError('Age must be a positive number (max 4 digits)');
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
@@ -210,14 +215,21 @@ const CreatePetpost = () => {
             
             {/* Age */}
             <div>
-              <label className="block text-gold mb-2 font-medium">Age (years) *</label>
+              <label className="block text-gold mb-2 font-medium">Age (weeks) *</label>
               <input
                 type="number"
                 name="age"
                 value={formData.age}
                 onChange={handleChange}
-                min="0"
-                step="0.1"
+                min="1"
+                step="1"
+                pattern="^[1-9][0-9]{0,3}$"
+                maxLength={4}
+                onInput={e => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                  if (e.target.value.length > 4) e.target.value = e.target.value.slice(0, 4);
+                  if (e.target.value !== '' && Number(e.target.value) < 1) e.target.value = '1';
+                }}
                 className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                 required
               />
@@ -269,7 +281,7 @@ const CreatePetpost = () => {
             {/* Price (only for sale listings) */}
             {formData.listingType === 'sale' && (
               <div>
-                <label className="block text-gold mb-2 font-medium">Price ($) *</label>
+                <label className="block text-gold mb-2 font-medium">Price (₹) *</label>
                 <input
                   type="number"
                   name="price"

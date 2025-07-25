@@ -49,6 +49,20 @@ export default function AiPetCare() {
     setLoading(true);
     setError(null);
     
+    // Validate age
+    if (isNaN(petData.petAge) || Number(petData.petAge) < 1 || petData.petAge.length > 4) {
+      setError('Age must be a positive number (max 4 digits)');
+      setLoading(false);
+      return;
+    }
+    
+    // In handleSubmit, also check for max 4 digits for weight
+    if (isNaN(petData.petWeight) || Number(petData.petWeight) < 1 || String(petData.petWeight).length > 4) {
+      setError('Weight must be a positive number (max 4 digits)');
+      setLoading(false);
+      return;
+    }
+    
     try {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND}/api/aipetcare`, { petData });
       setCareRecommendations(response.data.result);
@@ -208,12 +222,21 @@ export default function AiPetCare() {
                   </motion.div>
                   
                   <motion.div variants={itemVariants}>
-                    <label className="block text-gold mb-2 font-medium">Age (years)</label>
+                    <label className="block text-gold mb-2 font-medium">Age (weeks)</label>
                     <input
                       type="number"
                       name="petAge"
                       value={petData.petAge}
                       onChange={handleChange}
+                      min="1"
+                      step="1"
+                      pattern="^[1-9][0-9]{0,3}$"
+                      maxLength={4}
+                      onInput={e => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                        if (e.target.value.length > 4) e.target.value = e.target.value.slice(0, 4);
+                        if (e.target.value !== '' && Number(e.target.value) < 1) e.target.value = '1';
+                      }}
                       className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                       required
                     />
@@ -226,6 +249,15 @@ export default function AiPetCare() {
                       name="petWeight"
                       value={petData.petWeight}
                       onChange={handleChange}
+                      min="1"
+                      step="1"
+                      pattern="^[1-9][0-9]{0,3}$"
+                      maxLength={4}
+                      onInput={e => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                        if (e.target.value.length > 4) e.target.value = e.target.value.slice(0, 4);
+                        if (e.target.value !== '' && Number(e.target.value) < 1) e.target.value = '1';
+                      }}
                       className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
                       required
                     />

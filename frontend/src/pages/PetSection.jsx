@@ -348,7 +348,7 @@ const PetSection = () => {
                       <p className="text-white/80 text-sm mb-1">{pet.breed}</p>
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-white/70">
-                          {pet.gender}, {pet.age} years
+                          {pet.gender}, {pet.age} weeks old
                         </span>
                         <span className="text-white/60 text-sm">
                           {pet.location}
@@ -373,7 +373,7 @@ const PetSection = () => {
                       {pet.listingType === "sale" && pet.price && (
                         <div className="mb-4 text-right">
                           <span className="text-xl font-bold text-gold">
-                            ${pet.price}
+                          ₹{pet.price}
                           </span>
                         </div>
                       )}

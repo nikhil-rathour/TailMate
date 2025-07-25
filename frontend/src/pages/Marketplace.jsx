@@ -159,9 +159,9 @@ export default function Marketplace() {
                 <h3 className="font-bold text-xl mb-2 text-gold">{product.name}</h3>
                 <div className="flex justify-between items-center mb-4">
                   <div>
-                    <span className="text-xl font-bold">${product.price}</span>
+                    <span className="text-xl font-bold">₹{product.price}</span>
                     {product.originalPrice && (
-                      <span className="text-sm line-through ml-2 text-white/60">${product.originalPrice}</span>
+                      <span className="text-sm line-through ml-2 text-white/60">₹{product.originalPrice}</span>
                     )}
                   </div>
                   <span className="text-sm bg-white/10 px-2 py-1 rounded-full">{product.category}</span>

@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { getAllOwnerDatingProfiles, likeOwnerProfile, passOwnerProfile, getMyOwnerDatingProfile } from "../services/ownerDatingService";
 import { getPetsByOwnerEmail } from "../services/petService";
+import { navigateToChat } from "../services/chatService";
 
 
 
@@ -448,7 +449,14 @@ const Owenerdating = () => {
                           <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            onClick={() => navigate(`/chat/${currentProfile._id}`)}
+                            onClick={() => navigateToChat(
+                              navigate,
+                              currentProfile.user.email.split('@')[0],
+                              {
+                                name: currentProfile.user.name,
+                                picture: currentProfile.user.picture
+                              }
+                            )}
                             className="px-4 py-3 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-xl hover:bg-blue-500/30 transition-all duration-300 flex items-center justify-center"
                           >
                             <FiMessageCircle />
@@ -473,7 +481,7 @@ const Owenerdating = () => {
           
             
             {/* End of Profiles Message */}
-            {isLastProfile && (
+            {/* {isLastProfile && (
               <div className="fixed inset-0 flex items-center justify-center z-40 backdrop-blur-sm">
                 <div className="bg-white/5 rounded-lg p-6 text-center max-w-sm mx-4">
                   <h3 className="text-lg font-semibold mb-2 text-white">All caught up!</h3>
@@ -486,7 +494,7 @@ const Owenerdating = () => {
                   </button>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         )}
     

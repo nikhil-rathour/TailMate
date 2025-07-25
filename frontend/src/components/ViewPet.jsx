@@ -163,7 +163,7 @@ const ViewPet = () => {
                   </div>
                   <div>
                     <p className="text-softgray">Age</p>
-                    <p className="font-semibold">{pet?.data.age} years</p>
+                    <p className="font-semibold">{pet?.data.age} weeks old</p>
                   </div>
                   <div>
                     <p className="text-softgray">Gender</p>
@@ -338,7 +338,7 @@ const ViewPet = () => {
                   </div>
                   <div className="p-4">
                     <h3 className="font-bold">{ownerPet.name}</h3>
-                    <p className="text-softgray text-sm">{ownerPet.breed} • {ownerPet.age} years</p>
+                    <p className="text-softgray text-sm">{ownerPet.breed} • {ownerPet.age} weeks</p>
                     {isOwner && (
                       <div className="mt-2 flex justify-end">
                         <Link to={`/update-pet/${ownerPet._id}`} className="text-gold text-sm hover:underline">Edit</Link>

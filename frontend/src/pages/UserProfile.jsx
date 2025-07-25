@@ -351,7 +351,7 @@ const UserProfile = () => {
                             </p>
                             <p className="mb-3">
                               <span className="text-gold/80">Age:</span>{" "}
-                              {pet.age} years
+                              {pet.age} weeks old
                             </p>
 
                             <div className="flex space-x-2">

@@ -25,15 +25,15 @@ import Owenerdating from './pages/Owenerdating.jsx'
 import CreateOwenerDatingProfile from './components/CreateOwenerDatingProfile.jsx'
 import ViewOwnerDatingProfile from './components/ViewOwnerDatingProfile.jsx'
 import UpdateOwenerDatingProfile from './components/UpdateOwenerDatingProfile.jsx'
+import LiquidGlass from './components/LiquidGlass.jsx'
+import { LiquidGlassProvider, useLiquidGlass } from './context/LiquidGlassContext.jsx'
 
-export default function App() {
-  useLenis();
+function AppContent() {
+  const { isEnabled } = useLiquidGlass();
   return (
-   
-      <LikeProvider>
-         <AuthProvider>
-        <div className="flex flex-col min-h-screen pt-16 bg-[#191c2d]">
-          <Header />
+    <div className="flex flex-col min-h-screen pt-16 bg-[#191c2d]">
+      {isEnabled && <LiquidGlass width={100} height={100} />}
+      <Header />
           <main className="flex-grow">
             <Routes>
               <Route path="/login" element={<Login />} />
@@ -177,7 +177,18 @@ export default function App() {
         </main>
         <Footer />
       </div>
+  );
+}
+
+export default function App() {
+  useLenis();
+  return (
+    <LikeProvider>
+      <AuthProvider>
+        <LiquidGlassProvider>
+          <AppContent />
+        </LiquidGlassProvider>
       </AuthProvider>
-      </LikeProvider>
+    </LikeProvider>
   );
 }

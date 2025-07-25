@@ -1,6 +1,4 @@
-const { header } = require("express-validator");
 const mongoose = require("mongoose");
-const MediaEnum = ["IMAGE", "VIDEO"]
 
 const storySchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },

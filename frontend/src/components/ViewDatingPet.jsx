@@ -139,7 +139,7 @@ const ViewDatingPet = () => {
                   {pet.gender}
                 </span>
                 <span className="bg-gold/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
-                  {pet.age} years
+                  {pet.age} weeks old
                 </span>
               </div>
             </div>
@@ -160,7 +160,7 @@ const ViewDatingPet = () => {
                   </div>
                   <div className="flex items-center gap-2 text-white/70">
                     <FiActivity className="text-gold" /> 
-                    <span>Age: {pet.age} years</span>
+                    <span>Age: {pet.age} weeks old</span>
                   </div>
                 </div>
                 
@@ -331,7 +331,7 @@ const ViewDatingPet = () => {
                       </div>
                       <div className="p-4">
                         <h4 className="font-bold text-gold">{ownerPet.name}</h4>
-                        <p className="text-white/60 text-sm">{ownerPet.breed} • {ownerPet.age} years</p>
+                        <p className="text-white/60 text-sm">{ownerPet.breed} • {ownerPet.age} weeks old</p>
                       </div>
                     </Link>
                   ))}

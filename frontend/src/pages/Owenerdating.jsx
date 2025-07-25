@@ -6,11 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { getAllOwnerDatingProfiles, likeOwnerProfile, passOwnerProfile, getMyOwnerDatingProfile } from "../services/ownerDatingService";
 import { getPetsByOwnerEmail } from "../services/petService";
 import { navigateToChat } from "../services/chatService";
+import { createMatch } from "../services/matchService";
 
 
 
 const Owenerdating = () => {
-  const { userInfo } = useAuth();
+  const { userInfo, currentUser } = useAuth();
   const navigate = useNavigate();
   
   const [profiles, setProfiles] = useState([]);
@@ -23,6 +24,8 @@ const Owenerdating = () => {
   const [ageRange, setAgeRange] = useState({ min: 18, max: 60 });
   const [genderPreference, setGenderPreference] = useState('');
   const [userProfile, setUserProfile] = useState(null);
+  const [matchPanelOpen, setMatchPanelOpen] = useState(false);
+  const [matchedProfile, setMatchedProfile] = useState(null);
 
   // console.log(userProfile?._id);
 
@@ -135,7 +138,10 @@ const Owenerdating = () => {
       if (direction === "right") {
         const result = await likeOwnerProfile(profileId);
         if (result.data.match) {
-          alert("It's a match! 🎉");
+          // Store match data using createMatch service
+          await createMatch(profileId, await currentUser.getIdToken());
+          setMatchedProfile(currentProfile);
+          setMatchPanelOpen(true);
         }
       } else if (direction === "left") {
         await passOwnerProfile(profileId);
@@ -480,8 +486,62 @@ const Owenerdating = () => {
             
           
             
+            {/* Match Panel */}
+            {matchPanelOpen && matchedProfile && (
+              <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/50">
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="bg-gradient-to-br from-gold/20 to-purple-900/20 backdrop-blur-md rounded-3xl p-8 text-center max-w-md mx-4 border border-gold/30"
+                >
+                  <div className="text-6xl mb-4">🎉</div>
+                  <h3 className="text-3xl font-bold mb-2 text-gold">It's a Match!</h3>
+                  <p className="text-white/80 mb-6">You and {matchedProfile.user.name} liked each other</p>
+                  
+                  <div className="flex items-center justify-center gap-4 mb-6">
+                    <img 
+                      src={userProfile?.ProfilePicture || userInfo?.picture} 
+                      alt="You" 
+                      className="w-16 h-16 rounded-full border-2 border-gold"
+                    />
+                    <div className="text-2xl text-gold">💕</div>
+                    <img 
+                      src={matchedProfile.ProfilePicture} 
+                      alt={matchedProfile.user.name} 
+                      className="w-16 h-16 rounded-full border-2 border-gold"
+                    />
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setMatchPanelOpen(false)}
+                      className="flex-1 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all duration-300"
+                    >
+                      Keep Swiping
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMatchPanelOpen(false);
+                        navigateToChat(
+                          navigate,
+                          matchedProfile.user.email.split('@')[0],
+                          {
+                            name: matchedProfile.user.name,
+                            picture: matchedProfile.user.picture
+                          }
+                        );
+                      }}
+                      className="flex-1 py-3 bg-gold text-navy rounded-xl hover:bg-accent-orange transition-all duration-300 font-medium"
+                    >
+                      Send Message
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+            
             {/* End of Profiles Message */}
-            {/* {isLastProfile && (
+            {isLastProfile && (
               <div className="fixed inset-0 flex items-center justify-center z-40 backdrop-blur-sm">
                 <div className="bg-white/5 rounded-lg p-6 text-center max-w-sm mx-4">
                   <h3 className="text-lg font-semibold mb-2 text-white">All caught up!</h3>
@@ -494,7 +554,7 @@ const Owenerdating = () => {
                   </button>
                 </div>
               </div>
-            )} */}
+            )}
           </div>
         )}
     

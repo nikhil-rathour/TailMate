@@ -5,12 +5,16 @@ import { getPetsByOwnerEmail } from "../services/petService";
 import DeletePetButton from "../components/DeletePetButton";
 import { motion } from "framer-motion";
 import LikeComponent from "../components/profile/like";
+import { getMatches } from "../services/matchService";
 
 const UserProfile = () => {
   const { currentUser, userInfo, loading, logout } = useAuth();
   const [pets, setPets] = useState([]);
   const [petsLoading, setPetsLoading] = useState(false);
   const [petsError, setPetsError] = useState(null);
+  const [matches, setMatches] = useState([]);
+  const [matchesLoading, setMatchesLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("pets");
 
   // Get user email for fetching pets
   const ownerEmail = userInfo?.email;
@@ -75,6 +79,31 @@ const UserProfile = () => {
     fetchPets();
   }, [currentUser]);
 
+  // Fetch user's matches
+  useEffect(() => {
+    const fetchMatches = async () => {
+      if (!currentUser) return;
+      
+      setMatchesLoading(true);
+      try {
+        const token = await currentUser.getIdToken();
+        const response = await getMatches(token);
+        setMatches(response.data || []);
+      } catch (error) {
+        console.error('Error fetching matches:', error);
+      } finally {
+        setMatchesLoading(false);
+      }
+    };
+
+    if (activeTab === 'matches') {
+      fetchMatches();
+    }
+  }, [currentUser, activeTab]);
+
+  console.log(matches);
+  
+
   // Format date from "Sat, 19 Jul 2025 16:56:32 GMT" to "July 2025"
   const formatJoinDate = (dateString) => {
     if (!dateString) return "";
@@ -100,7 +129,6 @@ const UserProfile = () => {
       "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
   });
 
-  const [activeTab, setActiveTab] = useState("pets");
   const [showAddPetPopup, setShowAddPetPopup] = useState(false);
 
   const handleAddPetClick = () => {
@@ -384,19 +412,71 @@ const UserProfile = () => {
               )}
 
               {activeTab === "matches" && (
-                <div className="text-center py-12">
-                  <div className="w-24 h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-4xl text-gold">❤️</span>
+                <div>
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-2xl font-bold text-gold">My Matches</h3>
                   </div>
-                  <h3 className="text-2xl font-bold text-gold mb-2">
-                    No Matches Yet
-                  </h3>
-                  <p className="text-white/60 mb-6">
-                    Start matching your pets with others to see results here
-                  </p>
-                  <button className="bg-gold hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold text-sm shadow-lg transition">
-                    Find Matches
-                  </button>
+
+                  {matchesLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
+                    </div>
+                  ) : matches.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {matches.map((match) => {
+                        const matchedUser = match.matchedUser;
+                        return (
+                          <div
+                            key={match._id}
+                            className="bg-navy/50 p-6 rounded-xl border border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] hover:border-gold/60"
+                          >
+                            <div className="text-center">
+                              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gold mx-auto mb-4">
+                                <img 
+                                  src={matchedUser?.picture || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop&crop=face'}
+                                  alt={matchedUser?.name || 'User'}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <h4 className="text-lg font-bold text-gold mb-2">
+                                {matchedUser?.name || 'Unknown User'}
+                              </h4>
+                              <p className="text-sm text-white/60 mb-2">
+                                {matchedUser?.email || 'No email'}
+                              </p>
+                              <p className="text-xs text-white/50 mb-4">
+                                Matched on {new Date(match.createdAt).toLocaleDateString()}
+                              </p>
+                              <button 
+                                onClick={() => navigate(`/view-owner-dating-profile/${match.matchUserId}`)}
+                                className="bg-gold hover:bg-accent-orange text-navy px-4 py-2 rounded-full font-bold text-sm shadow-lg transition w-full"
+                              >
+                                View Profile
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="w-24 h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
+                        <span className="text-4xl text-gold">❤️</span>
+                      </div>
+                      <h3 className="text-2xl font-bold text-gold mb-2">
+                        No Matches Yet
+                      </h3>
+                      <p className="text-white/60 mb-6">
+                        Start matching with other pet owners to see results here
+                      </p>
+                      <button 
+                        onClick={() => navigate('/owner-dating')}
+                        className="bg-gold hover:bg-accent-orange text-navy px-6 py-2 rounded-full font-bold text-sm shadow-lg transition"
+                      >
+                        Find Matches
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

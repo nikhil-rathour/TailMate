@@ -655,16 +655,21 @@ const handleDeleteProfile = async () => {
                           {/* Cute Purpose Labels */}
                           
                           
-                          {pet.listingType === 'adoption' && (
-                            <span className="px-2 py-0.5 bg-green-500/30 text-green-300 text-xs rounded-full border border-green-400/50 flex items-center gap-1">
-                              🏠 Adoption
-                            </span>
-                          )}
-                          {pet.listingType === 'sale' && (
-                            <span className="px-2 py-0.5 bg-blue-500/30 text-blue-300 text-xs rounded-full border border-blue-400/50 flex items-center gap-1">
-                              💰 Sale
-                            </span>
-                          )}
+                              {pet.isDating ? (
+                                <span className="bg-gradient-to-r from-pink-500 to-red-400 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                  Dating
+                                </span>
+                              ) : (
+                                <span
+                                  className={`text-xs font-bold px-2 py-1 rounded-full ${
+                                    pet.listingType === "adoption"
+                                      ? "bg-green-500/90 text-white"
+                                      : "bg-blue-500/90 text-white"
+                                  }`}
+                                >
+                                  {pet.listingType === "adoption" ? "Adoption" : "Sale"}
+                                </span>
+                              )}
                          
                         </div>
                         <p className="text-white/70 text-xs sm:text-sm truncate">{pet.breed}</p>

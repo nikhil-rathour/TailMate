@@ -34,7 +34,7 @@ const PetSection = () => {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { setLikes, removeLikes, likes } = UseLike();
+  const { setLikes, likes } = UseLike();
   const petsPerPage = 8;
 
   // Animation variants
@@ -61,11 +61,11 @@ const PetSection = () => {
     setLikes(res.data);
   }
 
-  useEffect(() => {
-    if (userInfo) {
-      getLikeData(userInfo._id);
-    }
-  }, [userInfo]);
+  // useEffect(() => {
+  //   if (userInfo) {
+  //     getLikeData(userInfo._id);
+  //   }
+  // }, [userInfo]);
 
   // Fetch All pets from API
   useEffect(() => {

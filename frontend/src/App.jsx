@@ -25,8 +25,9 @@ import { LikeProvider } from './context/LikeContext.jsx'
 export default function App() {
   useLenis();
   return (
-    <AuthProvider>
+   
       <LikeProvider>
+         <AuthProvider>
         <div className="flex flex-col min-h-screen pt-16 bg-[#191c2d]">
           <Header />
           <main className="flex-grow">
@@ -142,7 +143,7 @@ export default function App() {
         </main>
         <Footer />
       </div>
+      </AuthProvider>
       </LikeProvider>
-    </AuthProvider>
   );
 }

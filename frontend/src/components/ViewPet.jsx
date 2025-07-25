@@ -4,6 +4,10 @@ import { getPetById } from '../services/petService';
 import { getPetsByOwnerEmail } from "../services/petService"
 import { useAuth } from "../context/AuthContext"
 import DeletePetButton from "./DeletePetButton";
+import { UseLike } from '../context/LikeContext';
+import { createLike, deleteLike, getAllLikePosts } from '../utils/like.utils';
+import toast from 'react-hot-toast';
+import { FiHeart } from 'react-icons/fi';
 
 
 const ViewPet = () => {
@@ -19,6 +23,10 @@ const ViewPet = () => {
   const [petsLoading, setPetsLoading] = useState(false);
   const [petsError, setPetsError] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
+  const {likes,setLikes} = UseLike()
+  const {userInfo} = useAuth()
+
+  const isLiked = likes.some((like) => like.postId._id === petId);
     
 
   useEffect(() => {
@@ -75,11 +83,25 @@ const ViewPet = () => {
      fetchPets();
    }, [pet, currentUser]);
 
-   
-   
-   
+    async function getLikeData(id) {
+    const res = await getAllLikePosts(id);
+    console.log(res);
+    setLikes(res.data);
+  }
 
+    const handleLike = async (id, isLiked) => {
+    if (isLiked) {
+      const res = await deleteLike(userInfo._id, id);
+    res.success?  toast.success(res.message) : toast.error(res.message);
+      console.log("post res", res);
+    } else {
+      const res = await createLike(userInfo._id, id);
+    res.success?  toast.success(res.message) : toast.error(res.message);
+      console.log("post res", res);
+    }
 
+    getLikeData(userInfo._id);
+  };
 
 
   if (petLoading) {
@@ -214,7 +236,10 @@ const ViewPet = () => {
                     >
                       Connect With Owner
                     </button>
-                    <button className="bg-white hover:bg-beige text-navy px-6 py-2 rounded-full font-bold shadow-lg transition flex-1">Save Pet</button>
+                    <button onClick={() => handleLike(petId,isLiked)} className="bg-white hover:bg-beige text-navy px-4 py-2 rounded-full flex items-center gap-2 shadow-lg transition">
+                      <FiHeart className={`${isLiked ? 'text-gold fill-red-600' : 'text-navy'} w-5 h-5`} />
+                      <span className="font-bold">{isLiked ? 'Unsave' : 'Save'}</span>
+                    </button>
                   </>
                 )}
               </div>

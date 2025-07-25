@@ -3,14 +3,25 @@ import axios from "axios";
 const API_URL = `${import.meta.env.VITE_BACKEND}/api/stories`;
 
 export const CreateStory = async (storyData) => {
-    try {
-        const response = await axios.post(`${API_URL}/create-story`, storyData);
-        return response.data;
-    } catch (error) {
-        console.error('Error creating story:', error);
-        throw error;
+  try {
+    const response = await axios.post(`${API_URL}/create-story`, storyData);
+    return response.data;
+  } catch (error) {
+    console.error("CreateStory error:", error);
+
+    // Safely handle error without assuming response is defined
+    if (error.response) {
+      console.error("Backend error:", error.response.data);
+      throw new Error(error.response.data.message || "Server error");
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+      throw new Error("No response from server");
+    } else {
+      throw new Error("Unexpected error occurred");
     }
-}
+  }
+};
+
 
 export const GetAllStories = async () => {
     try {

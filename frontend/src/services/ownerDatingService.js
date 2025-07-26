@@ -202,3 +202,24 @@ export const passOwnerProfile = async (profileId) => {
     throw error;
   }
 };
+
+/**
+ * Upload profile images
+ */
+export const uploadProfileImages = async (profileId, formData) => {
+  try {
+    const token = await getAuthToken();
+    
+    const response = await axios.post(`${API_URL}/upload-images/${profileId}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading profile images:', error);
+    throw error;
+  }
+};

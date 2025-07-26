@@ -16,8 +16,12 @@ import {
   FiBookmark,
   FiCamera,
   FiTrendingUp,
+  FiChevronLeft,
+  FiChevronRight,
+  FiPlus,
+  FiUpload,
 } from "react-icons/fi";
-import { getMyOwnerDatingProfile, getOwnerDatingProfileById } from "../services/ownerDatingService";
+import { getMyOwnerDatingProfile, getOwnerDatingProfileById, uploadProfileImages } from "../services/ownerDatingService";
 import { getPetsByOwnerEmail } from "../services/petService";
 import { useAuth } from "../context/AuthContext";
 import {deleteOwnerDatingProfile }from "../services/ownerDatingService";
@@ -34,6 +38,8 @@ const ViewOwnerDatingProfile = () => {
   const [error, setError] = useState(null);
   const [compatibility, setCompatibility] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [showFullBio, setShowFullBio] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -149,22 +155,65 @@ const ViewOwnerDatingProfile = () => {
     }
   }, [profile, myProfile, isOwner]);
 
+  // Auto-slide effect
+  useEffect(() => {
+    if (!profile?.images || profile.images.length <= 1 || isPaused) return;
+    
+    const interval = setInterval(() => {
+      setActiveImageIndex(prev => 
+        prev === profile.images.length - 1 ? 0 : prev + 1
+      );
+    }, 4000);
+    
+    return () => clearInterval(interval);
+  }, [profile?.images, isPaused]);
 
- // delete profile function logic
-const handleDeleteProfile = async () => {
-  if (window.confirm('Are you sure you want to delete your dating profile? This action cannot be undone.')) {
+
+  // Handle image upload
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    setUploading(true);
     try {
-      await deleteOwnerDatingProfile(profile._id);
-      navigate('/owner-dating', { 
-        replace: true,
-        state: { message: 'Profile deleted successfully' }
-      });
+      const formData = new FormData();
+      files.forEach(file => formData.append('images', file));
+      
+      const response = await uploadProfileImages(profile._id, formData);
+      
+      // Update profile with new images
+      setProfile(prev => ({
+        ...prev,
+        images: response.data.images
+      }));
+      
+      // Reset active index if needed
+      if (activeImageIndex >= response.data.images.length) {
+        setActiveImageIndex(0);
+      }
     } catch (error) {
-      console.error('Error deleting profile:', error);
-      alert('Failed to delete profile. Please try again.');
+      console.error('Error uploading images:', error);
+      alert('Failed to upload images. Please try again.');
+    } finally {
+      setUploading(false);
     }
-  }
-};
+  };
+
+  // delete profile function logic
+  const handleDeleteProfile = async () => {
+    if (window.confirm('Are you sure you want to delete your dating profile? This action cannot be undone.')) {
+      try {
+        await deleteOwnerDatingProfile(profile._id);
+        navigate('/owner-dating', { 
+          replace: true,
+          state: { message: 'Profile deleted successfully' }
+        });
+      } catch (error) {
+        console.error('Error deleting profile:', error);
+        alert('Failed to delete profile. Please try again.');
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -312,13 +361,101 @@ const handleDeleteProfile = async () => {
               className="bg-white/10 backdrop-blur-md rounded-2xl lg:rounded-3xl overflow-hidden border border-gold/20 shadow-2xl hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-500"
             >
               <div className="h-56 sm:h-72 md:h-80 lg:h-96 relative group overflow-hidden">
-                <motion.img
-                  src={profile.ProfilePicture}
-                  alt={profile.user.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  whileHover={{ scale: 1.05 }}
-                  loading="lazy"
-                />
+                {/* Image Slider */}
+                <div 
+                  className="relative w-full h-full"
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                >
+                  <motion.img
+                    key={activeImageIndex}
+                    src={profile.images?.[activeImageIndex] || profile.ProfilePicture}
+                    alt={`${profile.user.name} - ${activeImageIndex + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    loading="lazy"
+                  />
+                  
+                  {/* Navigation Arrows */}
+                  {profile.images?.length > 1 && (
+                    <>
+                      <motion.button
+                        whileHover={{ scale: 1.2, x: -2 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setActiveImageIndex(prev => 
+                          prev === 0 ? profile.images.length - 1 : prev - 1
+                        )}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-black/60 hover:bg-black/80 text-white rounded-full backdrop-blur-md transition-all duration-300 z-10 shadow-lg border border-white/20"
+                      >
+                        <FiChevronLeft className="text-xl" />
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.2, x: 2 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setActiveImageIndex(prev => 
+                          prev === profile.images.length - 1 ? 0 : prev + 1
+                        )}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-black/60 hover:bg-black/80 text-white rounded-full backdrop-blur-md transition-all duration-300 z-10 shadow-lg border border-white/20"
+                      >
+                        <FiChevronRight className="text-xl" />
+                      </motion.button>
+                    </>
+                  )}
+                  
+                  {/* Image Indicators */}
+                  {profile.images?.length > 1 && (
+                    <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                      {profile.images.map((_, idx) => (
+                        <motion.button
+                          key={idx}
+                          whileHover={{ scale: 1.3 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => setActiveImageIndex(idx)}
+                          className={`w-3 h-3 rounded-full transition-all duration-300 border-2 ${
+                            idx === activeImageIndex 
+                              ? 'bg-gold border-gold shadow-lg shadow-gold/50' 
+                              : 'bg-white/30 border-white/60 hover:bg-white/60 hover:border-white'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Upload Button - Only for owner */}
+                  {isOwner && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="absolute bottom-4 right-4 z-20"
+                    >
+                      <input
+                        type="file"
+                        id="image-upload"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        disabled={uploading}
+                      />
+                      <motion.label
+                        htmlFor="image-upload"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center gap-2 px-3 py-2 bg-gold/90 hover:bg-gold text-navy rounded-full font-semibold cursor-pointer transition-all duration-300 shadow-lg pointer-events-auto"
+                        style={{ pointerEvents: uploading ? 'none' : 'auto' }}
+                      >
+                        {uploading ? (
+                          <div className="w-4 h-4 border-2 border-navy border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <FiUpload className="text-sm" />
+                        )}
+                        <span className="text-sm">{uploading ? 'Uploading...' : 'Add Photos'}</span>
+                      </motion.label>
+                    </motion.div>
+                  )}
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/30 to-transparent group-hover:from-navy/80 transition-all duration-500"></div>
                 
                 {/* Status Badge */}

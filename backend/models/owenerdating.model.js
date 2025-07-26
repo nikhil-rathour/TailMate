@@ -10,6 +10,9 @@ const ownerDatingSchema = new Schema(
   ProfilePicture: { 
       type: String 
   },
+  images: [{ 
+      type: String 
+  }],
     
     // Dating profile specific information
     OwnerAge: { 
@@ -63,7 +66,7 @@ const ownerDatingSchema = new Schema(
     // Dating activity
     isOwnerDating: {
       type: Boolean,
-      default: false
+      default: true
     },
 
     // Matching data

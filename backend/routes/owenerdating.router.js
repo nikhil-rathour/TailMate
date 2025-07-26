@@ -33,4 +33,10 @@ router.post('/like/:profileId', ownerDatingController.likeProfile);
 // Pass on a profile
 router.post('/pass/:profileId', ownerDatingController.passProfile);
 
+// Upload multiple images to profile
+router.post('/upload-images/:id', ownerDatingController.upload.array('images', 6), ownerDatingController.uploadImages);
+
+// Toggle profile status
+router.patch('/toggle-status', ownerDatingController.toggleProfileStatus);
+
 module.exports = router;

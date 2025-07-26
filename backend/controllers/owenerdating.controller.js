@@ -415,6 +415,66 @@ const toggleProfileStatus = async (req, res) => {
   }
 };
 
+/**
+ * Upload multiple profile images
+ */
+const uploadImages = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No images provided'
+      });
+    }
+    
+    const user = await User.findOne({ uid: req.user.uid });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    const profile = await ownerDatingService.getProfileById(id);
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: 'Profile not found'
+      });
+    }
+    
+    if (profile.user._id.toString() !== user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Unauthorized'
+      });
+    }
+    
+    const imageUrls = [];
+    for (const file of req.files) {
+      const fileName = `owner-dating/${user._id}-${Date.now()}-${Math.random()}.${file.mimetype.split('/')[1]}`;
+      const imageUrl = await uploadImage(file.buffer, fileName, file.mimetype);
+      imageUrls.push(imageUrl);
+    }
+    
+    const updatedProfile = await ownerDatingService.addImages(id, imageUrls);
+    
+    res.status(200).json({
+      success: true,
+      data: updatedProfile
+    });
+  } catch (error) {
+    console.error('Error uploading images:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload images',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   createProfile,
   getAllProfiles,
@@ -426,5 +486,6 @@ module.exports = {
   likeProfile,
   passProfile,
   toggleProfileStatus,
+  uploadImages,
   upload
 };

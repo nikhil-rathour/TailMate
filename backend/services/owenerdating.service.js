@@ -196,6 +196,51 @@ const passProfile = async (userId, profileId) => {
   }
 };
 
+/**
+ * Add images to profile
+ */
+const addImages = async (profileId, imageUrls) => {
+  try {
+    const profile = await OwnerDating.findById(profileId);
+    if (!profile) {
+      throw new Error('Profile not found');
+    }
+    
+    // Add new images to existing ones
+    profile.images = profile.images || [];
+    profile.images.push(...imageUrls);
+    
+    // Limit to 6 images max
+    if (profile.images.length > 6) {
+      profile.images = profile.images.slice(-6);
+    }
+    
+    await profile.save();
+    return await OwnerDating.findById(profileId).populate('user', 'name email picture');
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Toggle profile status
+ */
+const toggleProfileStatus = async (userId) => {
+  try {
+    const profile = await OwnerDating.findOne({ user: userId });
+    if (!profile) {
+      throw new Error('Profile not found');
+    }
+    
+    profile.isActive = !profile.isActive;
+    await profile.save();
+    
+    return await OwnerDating.findById(profile._id).populate('user', 'name email picture');
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createOwnerDatingProfile,
   getAllProfiles,
@@ -205,5 +250,7 @@ module.exports = {
   deleteProfile,
   findNearbyProfiles,
   likeProfile,
-  passProfile
+  passProfile,
+  addImages,
+  toggleProfileStatus
 };

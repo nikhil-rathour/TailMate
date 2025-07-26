@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiArrowRight, FiHeart, FiShoppingBag, FiHome, FiPhone, FiAward } from 'react-icons/fi';
+import { FiArrowRight, FiHeart, FiShoppingBag, FiHome, FiPhone, FiAward  ,FiBook} from 'react-icons/fi';
 import VideoBackground from '../videos/VideoBackground';
 
 export default function Home() {
@@ -102,7 +102,7 @@ export default function Home() {
           {[
             { title: 'Pet Dating', desc: 'Discover compatible furry friends.', color: 'bg-white/10', icon: <FiHeart className="text-gold text-3xl mb-4" />, btn: 'Start Matching', link: '/dating' },
             { title: 'Pet Adoption', desc: 'Give a loving home to pets in need.', color: 'bg-white/10', icon: <FiHome className="text-gold text-3xl mb-4" />, btn: 'Adopt Now', link: '/petsection' },
-            { title: 'Marketplace', desc: 'Buy & sell pet essentials.', color: 'bg-white/10', icon: <FiShoppingBag className="text-gold text-3xl mb-4" />, btn: 'Shop Now', link: '/marketplace' },
+            { title: 'Pet Stories', desc: 'Share and explore heartwarming pet stories.', color: 'bg-white/10', icon: <FiBook className="text-gold text-3xl mb-4" />, btn: 'Shop Now', link: '/stories' },
             { title: 'Emergency Help', desc: 'Access nearby vets & services.', color: 'bg-white/10', icon: <FiPhone className="text-gold text-3xl mb-4" />, btn: 'Get Help', link: '/doctor' },
             { title: 'AI PetCare', desc: 'Personalized care plans.', color: 'bg-white/10', icon: <FiAward className="text-gold text-3xl mb-4" />, btn: 'Optimize Care', link: '/aipetcare' },
           ].map((feature, idx) => (
@@ -172,77 +172,7 @@ export default function Home() {
       </section>
 
       {/* Partners */}
-      <section className="py-16 px-4 text-center">
-        <motion.h2 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-3xl font-extrabold mb-8 text-gold"
-        >
-          Our Trusted Partners
-        </motion.h2>
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="flex flex-wrap justify-center items-center gap-6 md:gap-8"
-        >
-          {[...Array(6)].map((_, idx) => (
-            <motion.div 
-              key={idx} 
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-              className="w-24 h-24 bg-white/10 backdrop-blur-sm rounded-full border border-gold/20 flex items-center justify-center text-gold text-2xl"
-            >
-              P{idx+1}
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="py-16 px-4 bg-white/5">
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.h2 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold mb-4 text-gold"
-          >
-            Join Our Pet Lovers Community
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-lg mb-6 text-white/80"
-          >
-            Subscribe to our newsletter for pet care tips, events, and updates on new features.
-          </motion.p>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto"
-          >
-            <input 
-              type="email" 
-              placeholder="Your email address" 
-              className="flex-grow px-4 py-3 rounded-full bg-white/10 border border-gold/30 text-white focus:outline-none focus:ring-2 focus:ring-gold"
-            />
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-6 py-3 rounded-full font-bold transition-all duration-300"
-            >
-              Subscribe
-            </motion.button>
-          </motion.div>
-        </div>
-      </section>
+     
     </div>
   );
 }

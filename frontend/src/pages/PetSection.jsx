@@ -306,8 +306,7 @@ const PetSection = () => {
           >
             {paginatedPets.length > 0 ? (
               paginatedPets.map((pet) => {
-                const isLiked =
-                  likes.find((like) => like.postId._id === pet._id) ?? false;
+                  const isLiked = likes.find((like) => like._id === pet._id) ?? false;
 
                 console.log("isliked", isLiked);
 

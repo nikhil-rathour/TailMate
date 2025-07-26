@@ -19,8 +19,8 @@ With a modern React frontend and a robust Node.js/Express backend, TailMate brin
 ## 🖼️ Screenshots
 
 <!-- Replace these with actual screenshots or GIFs -->
-![Home Page](<img width="1897" height="874" alt="Screenshot 2025-07-26 234659" src="https://github.com/user-attachments/assets/7db41a26-6b69-4c19-9a37-ea3955caab05" />
-)
+<img width="1897" height="874" alt="Screenshot 2025-07-26 234659" src="https://github.com/user-attachments/assets/7db41a26-6b69-4c19-9a37-ea3955caab05" />
+
 
 ---
 

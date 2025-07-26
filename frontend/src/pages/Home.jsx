@@ -46,22 +46,22 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-wrap gap-4 justify-center"
+            className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center items-center max-w-4xl mx-auto"
           >
-            <Link to="/dating">
+            <Link to="/dating" className="w-full sm:w-auto">
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-8 py-3 rounded-full font-bold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] flex items-center gap-2"
+                className="w-full sm:w-auto bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-6 sm:px-8 py-3 rounded-full font-bold text-base sm:text-lg shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] flex items-center justify-center gap-2"
               >
                 <FiHeart /> Find Your Fur-ever Friend
               </motion.button>
             </Link>
-            <Link to="/aipetcare">
+            <Link to="/aipetcare" className="w-full sm:w-auto">
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg transition-all duration-300 flex items-center gap-2"
+                className="w-full sm:w-auto bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-6 sm:px-8 py-3 rounded-full font-bold text-base sm:text-lg shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
               >
                 <FiAward /> AI Pet Care
               </motion.button>
@@ -100,11 +100,11 @@ export default function Home() {
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8"
         >
           {[
-            { title: 'Pet Dating', desc: 'Discover compatible furry friends.', color: 'bg-white/10', icon: <FiHeart className="text-gold text-3xl mb-4" />, btn: 'Start Matching' },
-            { title: 'Pet Adoption', desc: 'Give a loving home to pets in need.', color: 'bg-white/10', icon: <FiHome className="text-gold text-3xl mb-4" />, btn: 'Adopt Now' },
-            { title: 'Marketplace', desc: 'Buy & sell pet essentials.', color: 'bg-white/10', icon: <FiShoppingBag className="text-gold text-3xl mb-4" />, btn: 'Shop Now' },
-            { title: 'Emergency Help', desc: 'Access nearby vets & services.', color: 'bg-white/10', icon: <FiPhone className="text-gold text-3xl mb-4" />, btn: 'Get Help' },
-            { title: 'AI PetCare', desc: 'Personalized care plans.', color: 'bg-white/10', icon: <FiAward className="text-gold text-3xl mb-4" />, btn: 'Optimize Care' },
+            { title: 'Pet Dating', desc: 'Discover compatible furry friends.', color: 'bg-white/10', icon: <FiHeart className="text-gold text-3xl mb-4" />, btn: 'Start Matching', link: '/dating' },
+            { title: 'Pet Adoption', desc: 'Give a loving home to pets in need.', color: 'bg-white/10', icon: <FiHome className="text-gold text-3xl mb-4" />, btn: 'Adopt Now', link: '/petsection' },
+            { title: 'Marketplace', desc: 'Buy & sell pet essentials.', color: 'bg-white/10', icon: <FiShoppingBag className="text-gold text-3xl mb-4" />, btn: 'Shop Now', link: '/marketplace' },
+            { title: 'Emergency Help', desc: 'Access nearby vets & services.', color: 'bg-white/10', icon: <FiPhone className="text-gold text-3xl mb-4" />, btn: 'Get Help', link: '/doctor' },
+            { title: 'AI PetCare', desc: 'Personalized care plans.', color: 'bg-white/10', icon: <FiAward className="text-gold text-3xl mb-4" />, btn: 'Optimize Care', link: '/aipetcare' },
           ].map((feature, idx) => (
             <motion.div 
               key={idx} 
@@ -114,13 +114,15 @@ export default function Home() {
               {feature.icon}
               <h3 className="text-xl font-bold mb-2 text-gold">{feature.title}</h3>
               <p className="text-base text-white/70 mb-6">{feature.desc}</p>
-              <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-6 py-2 rounded-full font-semibold shadow transition-all duration-300 flex items-center gap-2"
-              >
-                {feature.btn} <FiArrowRight size={14} />
-              </motion.button>
+              <Link to={feature.link}>
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-6 py-2 rounded-full font-semibold shadow transition-all duration-300 flex items-center gap-2"
+                >
+                  {feature.btn} <FiArrowRight size={14} />
+                </motion.button>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

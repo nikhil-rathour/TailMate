@@ -64,7 +64,7 @@ export default function Header() {
           >
             {({ isActive }) => (
               <>
-                Doctor
+                Vet Zone
                 <span
                   className={`absolute left-1/2 -bottom-1 h-0.5 bg-gold rounded-full transition-all duration-300 transform -translate-x-1/2 ${
                     isActive ? "w-2/3" : "w-0 group-hover:w-2/3"
@@ -141,7 +141,7 @@ export default function Header() {
           >
             {({ isActive }) => (
               <>
-                Stories
+                Bonded by Fur
                 <span
                   className={`absolute left-1/2 -bottom-1 h-0.5 bg-gold rounded-full transition-all duration-300 transform -translate-x-1/2 ${
                     isActive ? "w-2/3" : "w-0 group-hover:w-2/3"

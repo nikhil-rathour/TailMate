@@ -156,6 +156,12 @@ const ViewPet = () => {
                     </span>
                   </div>
                 </div>
+                {/* Price section for pets that are for sale */}
+                {pet?.data.listingType === 'sale' && pet?.data.price && (
+                  <div className="mb-4">
+                    <span className="text-green-400 font-bold text-2xl">₹{pet.data.price}</span>
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
                     <p className="text-softgray">Breed</p>
@@ -339,6 +345,10 @@ const ViewPet = () => {
                   <div className="p-4">
                     <h3 className="font-bold">{ownerPet.name}</h3>
                     <p className="text-softgray text-sm">{ownerPet.breed} • {ownerPet.age} weeks</p>
+                    {/* Show price if for sale */}
+                    {ownerPet.listingType === 'sale' && ownerPet.price && (
+                      <p className="text-green-400 font-bold text-lg mt-1">₹{ownerPet.price}</p>
+                    )}
                     {isOwner && (
                       <div className="mt-2 flex justify-end">
                         <Link to={`/update-pet/${ownerPet._id}`} className="text-gold text-sm hover:underline">Edit</Link>

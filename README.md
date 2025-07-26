@@ -19,9 +19,8 @@ With a modern React frontend and a robust Node.js/Express backend, TailMate brin
 ## 🖼️ Screenshots
 
 <!-- Replace these with actual screenshots or GIFs -->
-![Home Page](docs/screenshots/homepage.png)
-![Pet Profile](docs/screenshots/pet-profile.png)
-![Chat Feature](docs/screenshots/chat.png)
+![Home Page](<img width="1897" height="874" alt="Screenshot 2025-07-26 234659" src="https://github.com/user-attachments/assets/7db41a26-6b69-4c19-9a37-ea3955caab05" />
+)
 
 ---
 
@@ -74,8 +73,35 @@ With a modern React frontend and a robust Node.js/Express backend, TailMate brin
 
 ```
 TailMate/
-  backend/      # Express API, models, controllers, services
-  frontend/     # React app (Vite), components, pages, assets
+├── backend/
+│   ├── controllers/          # Business logic handlers
+│   ├── db/                   # Database connection
+│   ├── firebaseAdmin/        # Firebase Admin SDK setup
+│   ├── middleware/           # Authentication middleware
+│   ├── models/              # MongoDB schemas
+│   ├── routes/              # API endpoints
+│   ├── services/            # Business logic services
+│   ├── utils/               # Utility functions
+│   ├── app.js               # Express app setup
+│   ├── server.js            # Server entry point
+│   └── socket.js            # WebSocket configuration
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/      # React components
+│   │   ├── config/          # Firebase config
+│   │   ├── context/         # React Context (Auth, etc.)
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── pages/           # Page components
+│   │   ├── services/        # API service functions
+│   │   ├── utils/           # Utility functions
+│   │   ├── videos/          # Video components
+│   │   └── App.jsx          # Main app component
+│   └── public/              # Static assets
+│
+├── README.md                # Project documentation
+└── PROBLEM_STATEMENT.md     # Project requirements
+
 ```
 
 ---

@@ -29,7 +29,9 @@ Below is my pet's profile:
 Pet Profile:
 ${petInfo}
 
-Analyze the information and return personalized care recommendations for my pet. Keep answers **short and specific** — prefer **one-word or minimal phrases**. Avoid full sentences.
+${petData.additionalDetails ? `Additional Details: ${petData.additionalDetails}` : ''}
+
+Analyze the information and return personalized care recommendations for my pet. Keep answers **short and specific** — prefer **one-word or minimal phrases**. Avoid full sentences. ${petData.additionalDetails ? 'Pay special attention to the additional details provided.' : ''}
 
 Respond strictly in **valid JSON format** with the following keys:
 
@@ -44,7 +46,8 @@ Respond strictly in **valid JSON format** with the following keys:
   "baths_per_month": Number,
   "bath_time": "When to bathe (e.g. 'Morning', 'Weekend')",
   "daily_activities": ["1-3 fun or stimulating activities"],
-  "other_recommendations": "Short tip for health/happiness"
+  "other_recommendations": "Short tip for health/happiness",
+  "additional_info": "Specific advice based on additional details provided"
 }
 
 Ensure your output is **only valid JSON**. Do not include any text outside the JSON.

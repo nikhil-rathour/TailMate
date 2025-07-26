@@ -15,7 +15,8 @@ export default function AiPetCare() {
     petWeight: '',
     petCity: '',
     temperature: '',
-    gander: ''
+    gander: '',
+    additionalDetails: ''
   });
   const [careRecommendations, setCareRecommendations] = useState(null);
   const [error, setError] = useState(null);
@@ -288,6 +289,18 @@ export default function AiPetCare() {
                   </motion.div>
                 </motion.div>
                 
+                <motion.div variants={itemVariants} className="col-span-full">
+                  <label className="block text-gold mb-2 font-medium">Additional Details</label>
+                  <textarea
+                    name="additionalDetails"
+                    value={petData.additionalDetails}
+                    onChange={handleChange}
+                    placeholder="Any specific health concerns, behavioral issues, or special requirements..."
+                    rows={4}
+                    className="w-full bg-navy/50 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300 resize-none"
+                  />
+                </motion.div>
+                
                 <motion.div 
                   className="text-center pt-4"
                   initial={{ opacity: 0, y: 20 }}
@@ -420,6 +433,19 @@ export default function AiPetCare() {
                   <p className="mb-2"><span className="text-gold font-medium">Best Bath Time:</span> {careRecommendations.bath_time}</p>
                   <p className="mb-4"><span className="text-gold font-medium">Other Tips:</span> {careRecommendations.other_recommendations}</p>
                 </motion.div>
+                
+                {careRecommendations.additional_info && (
+                  <motion.div 
+                    variants={itemVariants}
+                    className="bg-navy/50 p-6 rounded-xl border border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] hover:border-gold/60 hover:bg-gradient-to-br hover:from-navy/70 hover:to-navy/40 group md:col-span-2 lg:col-span-3"
+                  >
+                    <div className="flex items-center mb-4">
+                      <span className="text-gold text-2xl mr-3">💡</span>
+                      <h3 className="text-xl font-bold text-gold">Additional Care Information</h3>
+                    </div>
+                    <p className="text-white/90 leading-relaxed">{careRecommendations.additional_info}</p>
+                  </motion.div>
+                )}
               </motion.div>
               
               <motion.div 
@@ -428,24 +454,7 @@ export default function AiPetCare() {
                 transition={{ delay: 0.6 }}
                 className="mt-10 text-center"
               >
-                <h3 className="text-xl font-bold mb-4 text-gold">More Resources</h3>
-                <div className="flex flex-wrap justify-center gap-4">
-                  {[
-                    { text: 'Find Local Vets', icon: '🏥' },
-                    { text: 'Pet Training Tips', icon: '🦮' },
-                    { text: 'Pet Community', icon: '👥' }
-                  ].map((resource, idx) => (
-                    <motion.a 
-                      key={idx}
-                      href="#" 
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-6 py-3 rounded-full font-bold text-sm shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] flex items-center gap-2"
-                    >
-                      <span>{resource.icon}</span> {resource.text}
-                    </motion.a>
-                  ))}
-                </div>
+                   
               </motion.div>
             </div>
           </motion.section>

@@ -21,15 +21,19 @@ import ViewDatingPet from './components/ViewDatingPet.jsx'
 import Chat from './components/Chat/Chat.jsx'
 import ChatPage from './components/Chat/ChatPage.jsx'
 import { LikeProvider } from './context/LikeContext.jsx'
+import Owenerdating from './pages/Owenerdating.jsx'
+import CreateOwenerDatingProfile from './components/CreateOwenerDatingProfile.jsx'
+import ViewOwnerDatingProfile from './components/ViewOwnerDatingProfile.jsx'
+import UpdateOwenerDatingProfile from './components/UpdateOwenerDatingProfile.jsx'
+import LiquidGlass from './components/LiquidGlass.jsx'
+import { LiquidGlassProvider, useLiquidGlass } from './context/LiquidGlassContext.jsx'
 
-export default function App() {
-  useLenis();
+function AppContent() {
+  const { isEnabled } = useLiquidGlass();
   return (
-   
-      <LikeProvider>
-         <AuthProvider>
-        <div className="flex flex-col min-h-screen pt-16 bg-[#191c2d]">
-          <Header />
+    <div className="flex flex-col min-h-screen pt-16 bg-[#191c2d]">
+      {isEnabled && <LiquidGlass width={100} height={100} />}
+      <Header />
           <main className="flex-grow">
             <Routes>
               <Route path="/login" element={<Login />} />
@@ -138,12 +142,53 @@ export default function App() {
                 <ChatPage />
               </ProtectedRoute>
             } />
-              
+
+                   <Route path="/owner-dating" element={
+              <ProtectedRoute>
+                <Owenerdating/>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/create-owner-dating-profile" element={
+              <ProtectedRoute>
+                <CreateOwenerDatingProfile/>
+              </ProtectedRoute>
+            } />
+
+           <Route path="/view-owner-dating-profile" element={
+              <ProtectedRoute>
+                <ViewOwnerDatingProfile/>
+              </ProtectedRoute>
+            } />
+            
+           <Route path="/view-owner-dating-profile/:profileId" element={
+              <ProtectedRoute>
+                <ViewOwnerDatingProfile/>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/update-owner-dating-profile/:_id" element={
+              <ProtectedRoute>
+                <UpdateOwenerDatingProfile/>
+              </ProtectedRoute>
+            } />
+
           </Routes>
         </main>
         <Footer />
       </div>
+  );
+}
+
+export default function App() {
+  useLenis();
+  return (
+    <LikeProvider>
+      <AuthProvider>
+        <LiquidGlassProvider>
+          <AppContent />
+        </LiquidGlassProvider>
       </AuthProvider>
-      </LikeProvider>
+    </LikeProvider>
   );
 }

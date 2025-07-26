@@ -5,21 +5,31 @@ import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiHeart, FiMapPin, FiCalendar, FiTag, FiEye, FiStar, FiSearch, FiFilter, FiX } from "react-icons/fi";
+import {
+  FiHeart,
+  FiMapPin,
+  FiCalendar,
+  FiTag,
+  FiEye,
+  FiStar,
+  FiSearch,
+  FiFilter,
+  FiX,
+} from "react-icons/fi";
 
 const LikeComponent = () => {
   const { likes, setLikes } = UseLike();
   const { userInfo } = useAuth();
   const navigate = useNavigate();
   const [removingId, setRemovingId] = useState(null);
-  
+
   // Search and filter states
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     breed: "",
     gender: "",
     ageRange: "",
-    listingType: ""
+    listingType: "",
   });
   const [showFilters, setShowFilters] = useState(false);
 
@@ -42,47 +52,70 @@ const LikeComponent = () => {
   // Get unique values for filter options
   const filterOptions = useMemo(() => {
     if (!likes.length) return { breeds: [], genders: [] };
-    
-    const breeds = [...new Set(likes.map(like => like.postId.breed).filter(Boolean))].sort();
-    const genders = [...new Set(likes.map(like => like.postId.gender).filter(Boolean))].sort();
-    
+
+    const breeds = [
+      ...new Set(
+        likes.map((like) => like.postId && like.postId.breed).filter(Boolean)
+      ),
+    ].sort();
+    const genders = [
+      ...new Set(
+        likes.map((like) => like.postId && like.postId.gender).filter(Boolean)
+      ),
+    ].sort();
+
     return { breeds, genders };
   }, [likes]);
 
   // Filtered likes based on search and filters
   const filteredLikes = useMemo(() => {
-    return likes.filter(like => {
+    return likes.filter((like) => {
       const post = like.postId;
-      
+
       // Search term filter (name and breed)
-      const matchesSearch = searchTerm === "" || 
+      const matchesSearch =
+        searchTerm === "" ||
         post.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.breed.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       // Breed filter
-      const matchesBreed = filters.breed === "" || 
+      const matchesBreed =
+        filters.breed === "" ||
         post.breed.toLowerCase() === filters.breed.toLowerCase();
-      
+
       // Gender filter
-      const matchesGender = filters.gender === "" || 
+      const matchesGender =
+        filters.gender === "" ||
         post.gender.toLowerCase() === filters.gender.toLowerCase();
-      
+
       // Age range filter
-      const matchesAge = filters.ageRange === "" || (() => {
-        const age = parseInt(post.age);
-        switch(filters.ageRange) {
-          case "young": return age <= 2;
-          case "adult": return age > 2 && age <= 7;
-          case "senior": return age > 7;
-          default: return true;
-        }
-      })();
-      
+      const matchesAge =
+        filters.ageRange === "" ||
+        (() => {
+          const age = parseInt(post.age);
+          switch (filters.ageRange) {
+            case "young":
+              return age <= 2;
+            case "adult":
+              return age > 2 && age <= 7;
+            case "senior":
+              return age > 7;
+            default:
+              return true;
+          }
+        })();
+
       // Listing type filter
-      const matchesListingType = filters.listingType === "" || 
-        post.listingType === filters.listingType;
-      
-      return matchesSearch && matchesBreed && matchesGender && matchesAge && matchesListingType;
+      const matchesListingType =
+        filters.listingType === "" || post.listingType === filters.listingType;
+
+      return (
+        matchesSearch &&
+        matchesBreed &&
+        matchesGender &&
+        matchesAge &&
+        matchesListingType
+      );
     });
   }, [likes, searchTerm, filters]);
 
@@ -93,12 +126,13 @@ const LikeComponent = () => {
       breed: "",
       gender: "",
       ageRange: "",
-      listingType: ""
+      listingType: "",
     });
   };
 
   // Check if any filters are active
-  const hasActiveFilters = searchTerm !== "" || Object.values(filters).some(filter => filter !== "");
+  const hasActiveFilters =
+    searchTerm !== "" || Object.values(filters).some((filter) => filter !== "");
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -106,40 +140,40 @@ const LikeComponent = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
+        delayChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       y: 30,
-      scale: 0.95
+      scale: 0.95,
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       scale: 1,
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 15
-      }
+        damping: 15,
+      },
     },
     exit: {
       opacity: 0,
       scale: 0.8,
       x: -100,
       transition: {
-        duration: 0.4
-      }
-    }
+        duration: 0.4,
+      },
+    },
   };
 
-  if (likes.length === 0) {
+  if (likes.length === 0 ) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="min-h-[60vh] flex flex-col items-center justify-center text-center space-y-6"
@@ -165,7 +199,7 @@ const LikeComponent = () => {
   return (
     <div className="space-y-8">
       {/* Premium Header */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex items-center justify-between mb-8"
@@ -176,7 +210,9 @@ const LikeComponent = () => {
               <FiHeart className="w-7 h-7 text-navy" />
             </div>
             <div className="absolute -top-1 -right-1 w-6 h-6 bg-navy rounded-full flex items-center justify-center border-2 border-gold">
-              <span className="text-gold text-xs font-bold">{likes.length}</span>
+              <span className="text-gold text-xs font-bold">
+                {likes.length}
+              </span>
             </div>
           </div>
           <div>
@@ -193,7 +229,7 @@ const LikeComponent = () => {
       </motion.div>
 
       {/* Search and Filter Section */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="space-y-4"
@@ -211,7 +247,7 @@ const LikeComponent = () => {
               className="w-full pl-12 pr-4 py-4 bg-white/5 backdrop-blur-xl border border-gold/20 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-gold/50 focus:ring-2 focus:ring-gold/20 transition-all duration-300"
             />
           </div>
-          
+
           {/* Filter Toggle Button */}
           <motion.button
             whileHover={{ scale: 1.02 }}
@@ -242,7 +278,9 @@ const LikeComponent = () => {
             >
               <div className="bg-white/5 backdrop-blur-xl border border-gold/20 rounded-2xl p-6 space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gold">Filter Options</h3>
+                  <h3 className="text-lg font-semibold text-gold">
+                    Filter Options
+                  </h3>
                   {hasActiveFilters && (
                     <motion.button
                       whileHover={{ scale: 1.05 }}
@@ -255,19 +293,30 @@ const LikeComponent = () => {
                     </motion.button>
                   )}
                 </div>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Breed Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white/70">Breed</label>
+                    <label className="text-sm font-medium text-white/70">
+                      Breed
+                    </label>
                     <select
                       value={filters.breed}
-                      onChange={(e) => setFilters(prev => ({ ...prev, breed: e.target.value }))}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          breed: e.target.value,
+                        }))
+                      }
                       className="w-full px-4 py-3 bg-white/5 border border-gold/20 rounded-xl text-white focus:outline-none focus:border-gold/50 focus:ring-2 focus:ring-gold/20 transition-all duration-300"
                     >
                       <option value="">All Breeds</option>
-                      {filterOptions.breeds.map(breed => (
-                        <option key={breed} value={breed} className="bg-navy text-white">
+                      {filterOptions.breeds.map((breed) => (
+                        <option
+                          key={breed}
+                          value={breed}
+                          className="bg-navy text-white"
+                        >
                           {breed}
                         </option>
                       ))}
@@ -276,15 +325,26 @@ const LikeComponent = () => {
 
                   {/* Gender Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white/70">Gender</label>
+                    <label className="text-sm font-medium text-white/70">
+                      Gender
+                    </label>
                     <select
                       value={filters.gender}
-                      onChange={(e) => setFilters(prev => ({ ...prev, gender: e.target.value }))}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          gender: e.target.value,
+                        }))
+                      }
                       className="w-full px-4 py-3 bg-white/5 border border-gold/20 rounded-xl text-white focus:outline-none focus:border-gold/50 focus:ring-2 focus:ring-gold/20 transition-all duration-300"
                     >
                       <option value="">All Genders</option>
-                      {filterOptions.genders.map(gender => (
-                        <option key={gender} value={gender} className="bg-navy text-white">
+                      {filterOptions.genders.map((gender) => (
+                        <option
+                          key={gender}
+                          value={gender}
+                          className="bg-navy text-white"
+                        >
                           {gender}
                         </option>
                       ))}
@@ -293,30 +353,54 @@ const LikeComponent = () => {
 
                   {/* Age Range Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white/70">Age Range</label>
+                    <label className="text-sm font-medium text-white/70">
+                      Age Range
+                    </label>
                     <select
                       value={filters.ageRange}
-                      onChange={(e) => setFilters(prev => ({ ...prev, ageRange: e.target.value }))}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          ageRange: e.target.value,
+                        }))
+                      }
                       className="w-full px-4 py-3 bg-white/5 border border-gold/20 rounded-xl text-white focus:outline-none focus:border-gold/50 focus:ring-2 focus:ring-gold/20 transition-all duration-300"
                     >
                       <option value="">All Ages</option>
-                      <option value="young" className="bg-navy text-white">Young (0-2 years)</option>
-                      <option value="adult" className="bg-navy text-white">Adult (3-7 years)</option>
-                      <option value="senior" className="bg-navy text-white">Senior (8+ years)</option>
+                      <option value="young" className="bg-navy text-white">
+                        Young (0-2 years)
+                      </option>
+                      <option value="adult" className="bg-navy text-white">
+                        Adult (3-7 years)
+                      </option>
+                      <option value="senior" className="bg-navy text-white">
+                        Senior (8+ years)
+                      </option>
                     </select>
                   </div>
 
                   {/* Listing Type Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white/70">Listing Type</label>
+                    <label className="text-sm font-medium text-white/70">
+                      Listing Type
+                    </label>
                     <select
                       value={filters.listingType}
-                      onChange={(e) => setFilters(prev => ({ ...prev, listingType: e.target.value }))}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          listingType: e.target.value,
+                        }))
+                      }
                       className="w-full px-4 py-3 bg-white/5 border border-gold/20 rounded-xl text-white focus:outline-none focus:border-gold/50 focus:ring-2 focus:ring-gold/20 transition-all duration-300"
                     >
                       <option value="">All Types</option>
-                      <option value="adoption" className="bg-navy text-white">Adoption</option>
-                      <option value="sale" className="bg-navy text-white">For Sale</option>
+                      <option value="adoption" className="bg-navy text-white">
+                        Adoption
+                      </option>
+                      <option value="sale" className="bg-navy text-white">
+                        For Sale
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -343,18 +427,26 @@ const LikeComponent = () => {
                 </button>
               </div>
             )}
-            {Object.entries(filters).map(([key, value]) => 
-              value && (
-                <div key={key} className="flex items-center space-x-2 px-3 py-2 bg-accent-orange/20 border border-accent-orange/30 rounded-xl text-accent-orange text-sm">
-                  <span>{key}: {value}</span>
-                  <button
-                    onClick={() => setFilters(prev => ({ ...prev, [key]: "" }))}
-                    className="hover:bg-accent-orange/20 rounded p-1 transition-colors duration-200"
+            {Object.entries(filters).map(
+              ([key, value]) =>
+                value && (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-2 px-3 py-2 bg-accent-orange/20 border border-accent-orange/30 rounded-xl text-accent-orange text-sm"
                   >
-                    <FiX className="w-3 h-3" />
-                  </button>
-                </div>
-              )
+                    <span>
+                      {key}: {value}
+                    </span>
+                    <button
+                      onClick={() =>
+                        setFilters((prev) => ({ ...prev, [key]: "" }))
+                      }
+                      className="hover:bg-accent-orange/20 rounded p-1 transition-colors duration-200"
+                    >
+                      <FiX className="w-3 h-3" />
+                    </button>
+                  </div>
+                )
             )}
           </motion.div>
         )}
@@ -370,9 +462,12 @@ const LikeComponent = () => {
           <div className="w-16 h-16 bg-gradient-to-br from-gold/20 to-accent-orange/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto">
             <FiSearch className="w-8 h-8 text-gold/60" />
           </div>
-          <h3 className="text-xl font-semibold text-gold">No pets match your filters</h3>
+          <h3 className="text-xl font-semibold text-gold">
+            No pets match your filters
+          </h3>
           <p className="text-white/60 max-w-md mx-auto">
-            Try adjusting your search criteria or clearing some filters to see more results
+            Try adjusting your search criteria or clearing some filters to see
+            more results
           </p>
           <button
             onClick={clearFilters}
@@ -384,7 +479,7 @@ const LikeComponent = () => {
       )}
 
       {/* Enhanced Grid */}
-      <motion.div 
+      <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -393,10 +488,14 @@ const LikeComponent = () => {
         <AnimatePresence mode="popLayout">
           {filteredLikes.map((like) => {
             console.log("like", like);
+            if (!like.postId) return null;
+            console.log("like", like);
             const post = like.postId;
             const isRemoving = removingId === post._id;
-            const isNew = new Date(post.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-            
+            const isNew =
+              new Date(post.createdAt) >
+              new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
             return (
               <motion.div
                 key={post._id}
@@ -406,7 +505,6 @@ const LikeComponent = () => {
                 className="group relative"
               >
                 <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl overflow-hidden border border-gold/20 hover:border-gold/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.2)] transition-all duration-700 shadow-xl">
-                  
                   {/* Enhanced Image Container */}
                   <div className="relative h-56 overflow-hidden">
                     <motion.img
@@ -420,10 +518,10 @@ const LikeComponent = () => {
                         e.target.src = "/default-pet.jpg";
                       }}
                     />
-                    
+
                     {/* Premium Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent opacity-60" />
-                    
+
                     {/* Enhanced New Badge */}
                     <AnimatePresence>
                       {isNew && (
@@ -444,15 +542,19 @@ const LikeComponent = () => {
                       whileTap={{ scale: 0.9 }}
                       className="absolute top-4 left-4 z-10"
                     >
-                      <div 
+                      <div
                         onClick={() => handleLike(post._id)}
                         className="p-3 bg-black/30 backdrop-blur-md rounded-full border border-white/20 hover:bg-red-500/20 transition-all duration-300 cursor-pointer group/heart"
                       >
                         <motion.div
-                          animate={isRemoving ? { 
-                            rotate: [0, 15, -15, 0],
-                            scale: [1, 1.2, 1]
-                          } : {}}
+                          animate={
+                            isRemoving
+                              ? {
+                                  rotate: [0, 15, -15, 0],
+                                  scale: [1, 1.2, 1],
+                                }
+                              : {}
+                          }
                           transition={{ duration: 0.5 }}
                         >
                           <FiHeart className="w-5 h-5 text-red-500 fill-current group-hover/heart:text-red-400 transition-colors duration-200" />
@@ -462,7 +564,7 @@ const LikeComponent = () => {
 
                     {/* Enhanced Price Display */}
                     {post.listingType === "sale" && post.price && (
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="absolute bottom-4 right-4 z-10"
@@ -481,7 +583,9 @@ const LikeComponent = () => {
                       <h3 className="font-bold text-2xl text-gold group-hover:text-accent-orange transition-colors duration-300">
                         {post.name}
                       </h3>
-                      <p className="text-white/70 text-sm font-medium tracking-wide">{post.breed}</p>
+                      <p className="text-white/70 text-sm font-medium tracking-wide">
+                        {post.breed}
+                      </p>
                     </div>
 
                     {/* Enhanced Details Grid */}
@@ -489,7 +593,9 @@ const LikeComponent = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2 text-white/80">
                           <div className="w-2 h-2 bg-gold rounded-full" />
-                          <span className="font-medium">{post.gender}, {post.age} years</span>
+                          <span className="font-medium">
+                            {post.gender}, {post.age} years
+                          </span>
                         </div>
                         <div className="flex items-center space-x-2 text-white/60">
                           <FiMapPin className="w-4 h-4" />
@@ -502,16 +608,22 @@ const LikeComponent = () => {
                     <div className="flex items-center justify-between pt-2 border-t border-white/10">
                       <div className="flex items-center space-x-2 text-xs text-white/50">
                         <FiCalendar className="w-3.5 h-3.5" />
-                        <span>Added: {new Date(post.createdAt).toLocaleDateString()}</span>
+                        <span>
+                          Added: {new Date(post.createdAt).toLocaleDateString()}
+                        </span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <FiTag className="w-3.5 h-3.5 text-white/40" />
-                        <span className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${
-                          post.listingType === "adoption"
-                            ? "bg-green-500/15 text-green-300 border-green-500/30"
-                            : "bg-blue-500/15 text-blue-300 border-blue-500/30"
-                        }`}>
-                          {post.listingType === "adoption" ? "Adoption" : "For Sale"}
+                        <span
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${
+                            post.listingType === "adoption"
+                              ? "bg-green-500/15 text-green-300 border-green-500/30"
+                              : "bg-blue-500/15 text-blue-300 border-blue-500/30"
+                          }`}
+                        >
+                          {post.listingType === "adoption"
+                            ? "Adoption"
+                            : "For Sale"}
                         </span>
                       </div>
                     </div>
@@ -525,7 +637,9 @@ const LikeComponent = () => {
                     >
                       <FiEye className="w-5 h-5 group-hover/btn:scale-110 transition-transform duration-300" />
                       <span className="text-lg">
-                        {post.listingType === "adoption" ? "Adopt Me!" : "View Details"}
+                        {post.listingType === "adoption"
+                          ? "Adopt Me!"
+                          : "View Details"}
                       </span>
                     </motion.button>
                   </div>

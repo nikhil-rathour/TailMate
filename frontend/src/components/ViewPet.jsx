@@ -26,7 +26,7 @@ const ViewPet = () => {
   const {likes,setLikes} = UseLike()
   const {userInfo} = useAuth()
 
-  const isLiked = likes.some((like) => like.postId._id === petId);
+  const isLiked = likes.some((like) => like.postId && like.postId._id === petId);
     
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const ViewPet = () => {
     res.success?  toast.success(res.message) : toast.error(res.message);
       console.log("post res", res);
     } else {
-      const res = await createLike(userInfo._id, id);
+      const res = await createLike(userInfo._id, petId);
     res.success?  toast.success(res.message) : toast.error(res.message);
       console.log("post res", res);
     }
@@ -242,7 +242,7 @@ const ViewPet = () => {
                     >
                       Connect With Owner
                     </button>
-                    <button onClick={() => handleLike(petId,isLiked)} className="bg-white hover:bg-beige text-navy px-4 py-2 rounded-full flex items-center gap-2 shadow-lg transition">
+                    <button onClick={() => handleLike(petId,isLiked )} className="bg-white hover:bg-beige text-navy px-4 py-2 rounded-full flex items-center gap-2 shadow-lg transition">
                       <FiHeart className={`${isLiked ? 'text-gold fill-red-600' : 'text-navy'} w-5 h-5`} />
                       <span className="font-bold">{isLiked ? 'Unsave' : 'Save'}</span>
                     </button>

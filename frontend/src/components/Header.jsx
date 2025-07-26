@@ -254,11 +254,11 @@ export default function Header() {
           <nav className="flex flex-col space-y-2 px-6">
             <NavLink to="/" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
             <NavLink to="/aipetcare" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>AI PetCare</NavLink>
-            <NavLink to="/doctor" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Doctor</NavLink>
-            <NavLink to="/marketplace" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Marketplace</NavLink>
-            <NavLink to="/petsection" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Get Pet</NavLink>
+            <NavLink to="/doctor" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Vet Zone</NavLink>
+            <NavLink to="/petsection" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Pets</NavLink>
             <NavLink to="/dating" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Dating</NavLink>
-            <NavLink to="/owner-dating" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Owners Dating</NavLink>
+            <NavLink to="/owner-dating" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Furmate</NavLink>
+            <NavLink to="/stories" className="py-2 text-white hover:text-gold transition" onClick={() => setIsMobileMenuOpen(false)}>Stories</NavLink>
             {currentUser && (
               <>
                 <hr className="border-gold/30 my-2" />

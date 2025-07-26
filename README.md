@@ -1,7 +1,5 @@
 # TailMate
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-TailMate-blue?style=for-the-badge)](https://tail-mate-kappa.vercel.app/)
-
 **Live Demo:** [https://tail-mate-kappa.vercel.app/](https://tail-mate-kappa.vercel.app/)
 
 ---

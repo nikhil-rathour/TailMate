@@ -9,6 +9,9 @@ import {
   Upload,
   X,
   Loader2,
+  Heart,
+  FileText,
+  Image as ImageIcon
 } from "lucide-react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
@@ -29,6 +32,14 @@ const CreateStoryForm = ({ userId, story, onClose, onUpdated }) => {
   const [errors, setErrors] = useState({});
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   useEffect(() => {
     if (story) {
@@ -57,24 +68,36 @@ const CreateStoryForm = ({ userId, story, onClose, onUpdated }) => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setImageFile(file);
+    
     if (file) {
       // Validate file type
       if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
         toast.error("Please select a valid image or video file");
+        e.target.value = ''; // Clear the input
         return;
       }
 
       // Validate file size (10MB limit)
       if (file.size > 10 * 1024 * 1024) {
         toast.error("File size must be less than 10MB");
+        e.target.value = ''; // Clear the input
         return;
       }
 
+      console.log('File selected:', { name: file.name, size: file.size, type: file.type });
+      setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
       // Clear mediaUrl when file is selected
       setFormData((prev) => ({ ...prev, mediaUrl: "" }));
+      
+      // Update media type based on file
+      if (file.type.startsWith('video/')) {
+        setMediaType('VIDEO');
+      } else {
+        setMediaType('IMAGE');
+      }
     } else {
+      setImageFile(null);
       setImagePreview("");
     }
   };
@@ -155,16 +178,18 @@ const CreateStoryForm = ({ userId, story, onClose, onUpdated }) => {
         };
       }
 
-
+      let result;
       if (story?._id) {
         // Update existing story
-     await UpdateStory(story._id, payload);
+        result = await UpdateStory(story._id, payload);
         toast.success("Story updated successfully! 🎉", { id: loadingToast });
       } else {
         // Create new story
-      await CreateStory(payload);
+        result = await CreateStory(payload);
         toast.success("Story created successfully! 🎉", { id: loadingToast });
       }
+      
+      console.log('Story operation result:', result);
 
       // Auto-close after success
       setTimeout(() => {
@@ -198,264 +223,259 @@ const CreateStoryForm = ({ userId, story, onClose, onUpdated }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 overflow-hidden"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
+    <div 
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-hidden"
+      onWheel={(e) => e.stopPropagation()}
     >
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] border border-yellow-400/20 flex flex-col overflow-hidden"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="bg-gradient-to-br from-navy via-navy/95 to-black rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] border-2 border-gold/30 flex flex-col overflow-hidden"
+        onWheel={(e) => e.stopPropagation()}
       >
-        {/* Fixed Header */}
-        <div className="flex items-center justify-between px-8 py-6 border-b border-gray-700 flex-shrink-0 bg-gradient-to-br from-gray-900 via-black to-gray-800">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gold/20 bg-navy/50 backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg">
-              <BookOpen className="w-6 h-6 text-black" />
+            <div className="p-3 bg-gradient-to-r from-gold to-accent-orange rounded-xl shadow-lg">
+              <BookOpen className="w-6 h-6 text-navy" />
             </div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
-              {story ? "Edit Story" : "Create New Story"}
-            </h2>
+            <div>
+              <h2 className="text-2xl font-bold text-gold">
+                {story ? "Edit Pet Story" : "Share Your Pet's Story"}
+              </h2>
+              <p className="text-white/70 text-sm">
+                Tell the world about your amazing companion
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors text-2xl p-2 hover:bg-gray-700 rounded-lg"
+            className="text-white/60 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
             disabled={loading}
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
-        {/* Scrollable Content */}
-        <div
-          className="flex-1 overflow-y-auto px-8 scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-yellow-400 hover:scrollbar-thumb-yellow-500"
-          style={{
-            scrollbarWidth: "thin",
-            scrollbarColor: "#FBBF24 #374151",
-          }}
+        {/* Content */}
+        <div 
+          className="flex-1 overflow-y-auto px-6 py-6 space-y-6" 
+          style={{ scrollBehavior: 'smooth' }}
+          onWheel={(e) => e.stopPropagation()}
         >
-          <div className="py-6 space-y-6">
-            {/* Error Message */}
-            {errors.submit && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-4 bg-red-900/50 border border-red-500/50 rounded-xl"
-              >
-                <p className="text-red-300 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-red-400 rounded-full"></span>
-                  {errors.submit}
-                </p>
-              </motion.div>
+          {/* Error Message */}
+          {errors.submit && (
+            <div className="p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300">
+              {errors.submit}
+            </div>
+          )}
+
+          {/* Story Header */}
+          <div>
+            <label className="block text-gold font-semibold mb-2 flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              Story Header *
+            </label>
+            <input
+              name="header"
+              value={formData.header}
+              onChange={handleInputChange}
+              className="w-full p-4 bg-navy/50 border border-gold/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
+              placeholder="Give your story a captivating header..."
+              disabled={loading}
+            />
+            {errors.header && (
+              <p className="text-red-400 text-sm mt-1">{errors.header}</p>
             )}
+          </div>
 
-            {/* Header */}
-            <div className="group">
-              <label className="block text-yellow-400 font-semibold mb-2 flex items-center gap-2">
-                <Sparkles className="w-4 h-4" />
-                Header *
-              </label>
-              <input
-                name="header"
-                value={formData.header}
-                onChange={handleInputChange}
-                className="w-full p-4 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all duration-300"
-                placeholder="Enter a captivating header..."
-                disabled={loading}
-              />
-              {errors.header && (
-                <p className="text-red-400 text-sm mt-2">{errors.header}</p>
-              )}
-            </div>
+          {/* Story Title */}
+          <div>
+            <label className="block text-gold font-semibold mb-2 flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Story Title *
+            </label>
+            <input
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              className="w-full p-4 bg-navy/50 border border-gold/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
+              placeholder="What's your pet's story called?"
+              disabled={loading}
+            />
+            {errors.title && (
+              <p className="text-red-400 text-sm mt-1">{errors.title}</p>
+            )}
+          </div>
 
-            {/* Title */}
-            <div className="group">
-              <label className="block text-yellow-400 font-semibold mb-2">
-                Title *
-              </label>
-              <input
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                className="w-full p-4 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all duration-300"
-                placeholder="What's your story called?"
-                disabled={loading}
-              />
-              {errors.title && (
-                <p className="text-red-400 text-sm mt-2">{errors.title}</p>
-              )}
-            </div>
-
-            {/* Story Content */}
-            <div className="group">
-              <label className="block text-yellow-400 font-semibold mb-2">
-                Story Content *
-              </label>
-              <textarea
-                name="content"
-                value={formData.content}
-                onChange={handleInputChange}
-                rows={8}
-                className="w-full p-4 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all duration-300 resize-none"
-                placeholder="Tell your story here..."
-                disabled={loading}
-              />
+          {/* Story Content */}
+          <div>
+            <label className="block text-gold font-semibold mb-2 flex items-center gap-2">
+              <Heart className="w-4 h-4" />
+              Your Pet's Story *
+            </label>
+            <textarea
+              name="content"
+              value={formData.content}
+              onChange={handleInputChange}
+              rows={6}
+              className="w-full p-4 bg-navy/50 border border-gold/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300 resize-none"
+              placeholder="Share your pet's amazing journey, funny moments, or heartwarming experiences..."
+              disabled={loading}
+            />
+            <div className="flex justify-between items-center mt-1">
               {errors.content && (
-                <p className="text-red-400 text-sm mt-2">{errors.content}</p>
+                <p className="text-red-400 text-sm">{errors.content}</p>
               )}
+              <span className="text-white/50 text-xs ml-auto">
+                {formData.content.length} characters
+              </span>
             </div>
+          </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Media Upload */}
-              <div className="group">
-                <label className="block text-yellow-400 font-semibold mb-2 flex items-center gap-2">
-                  <Upload className="w-4 h-4" />
-                  Upload Media
-                </label>
-                <div className="space-y-3">
-                  <input
-                    type="file"
-                    accept="image/*,video/*"
-                    onChange={handleFileChange}
-                    className="w-full bg-gray-800/50 border border-gray-700 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-400 file:text-black hover:file:bg-yellow-500 transition-all duration-300"
-                    disabled={loading}
-                  />
-                  <div className="text-xs text-gray-400">
-                    Support images and videos up to 10MB
-                  </div>
-                </div>
-              </div>
-
-              {/* Media URL (Alternative) */}
-              <div className="group">
-                <label className="block text-yellow-400 font-semibold mb-2 flex items-center gap-2">
-                  <Camera className="w-4 h-4" />
-                  Or Media URL
-                </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Media Upload */}
+            <div>
+              <label className="block text-gold font-semibold mb-2 flex items-center gap-2">
+                <Upload className="w-4 h-4" />
+                Upload Media
+              </label>
+              <div className="border-2 border-dashed border-gold/30 rounded-lg p-4 text-center hover:border-gold/50 transition-colors">
                 <input
-                  name="mediaUrl"
-                  value={formData.mediaUrl}
-                  onChange={handleInputChange}
-                  placeholder="https://your-media-url.com"
-                  className="w-full p-4 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all duration-300"
-                  disabled={loading || imageFile}
+                  type="file"
+                  accept="image/*,video/*"
+                  onChange={handleFileChange}
+                  className="w-full bg-navy/50 border border-gold/30 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-gradient-to-r file:from-gold file:to-accent-orange file:text-navy file:font-semibold hover:file:from-accent-orange hover:file:to-gold transition-all duration-300"
+                  disabled={loading}
                 />
-                {imageFile && (
-                  <p className="text-xs text-gray-400 mt-1">
-                    File upload takes priority over URL
-                  </p>
-                )}
+                <p className="text-white/60 text-xs mt-2">
+                  Support images and videos up to 10MB
+                </p>
               </div>
             </div>
 
-            {/* Media Preview */}
-            {imagePreview && (
-              <div className="group">
-                <label className="block text-yellow-400 font-semibold mb-2">
-                  Media Preview
-                </label>
-                <div className="relative h-60 w-full rounded-xl overflow-hidden shadow-lg border border-gray-700">
-                  {mediaType === "VIDEO" && imagePreview.includes("video") ? (
-                    <video
-                      src={imagePreview}
-                      className="w-full h-full object-cover"
-                      controls
-                    />
-                  ) : (
-                    <img
-                      src={imagePreview}
-                      alt="Media preview"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src =
-                          "https://via.placeholder.com/400x300?text=Invalid+Media+URL";
-                      }}
-                    />
-                  )}
-                  <button
-                    onClick={removeImage}
-                    className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition-colors"
-                    disabled={loading}
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Media Type */}
-              <div className="group">
-                <label className="block text-yellow-400 font-semibold mb-2">
-                  Media Type
-                </label>
-                <select
-                  value={mediaType}
-                  onChange={(e) => setMediaType(e.target.value)}
-                  className="w-full p-4 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all duration-300"
-                  disabled={loading}
-                >
-                  <option value="IMAGE">📸 Image</option>
-                  <option value="VIDEO">🎥 Video</option>
-                </select>
-              </div>
-
-              {/* Category */}
-              <div className="group">
-                <label className="block text-yellow-400 font-semibold mb-2">
-                  Category
-                </label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  className="w-full p-4 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all duration-300"
-                  disabled={loading}
-                >
-                  {categories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat === "FUNNY" && "😂 "}
-                      {cat === "SAD" && "😢 "}
-                      {cat === "EMOTIONAL" && "❤️ "}
-                      {cat === "JOURNEY" && "🚀 "}
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Tags */}
-            <div className="group mb-8">
-              <label className="block text-yellow-400 font-semibold mb-2 flex items-center gap-2">
-                <Tag className="w-4 h-4" />
-                Tags
+            {/* Media URL */}
+            <div>
+              <label className="block text-gold font-semibold mb-2 flex items-center gap-2">
+                <Camera className="w-4 h-4" />
+                Or Media URL
               </label>
               <input
-                name="tags"
-                value={formData.tags}
+                name="mediaUrl"
+                value={formData.mediaUrl}
                 onChange={handleInputChange}
-                placeholder="adventure, inspiring, life-changing"
-                className="w-full p-4 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all duration-300"
-                disabled={loading}
+                placeholder="https://your-media-url.com"
+                className="w-full p-4 bg-navy/50 border border-gold/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
+                disabled={loading || imageFile}
               />
-              <p className="text-gray-400 text-xs mt-1">
-                Separate tags with commas
-              </p>
+              {imageFile && (
+                <p className="text-white/60 text-xs mt-1">
+                  File upload takes priority over URL
+                </p>
+              )}
             </div>
+          </div>
+
+          {/* Media Preview */}
+          {imagePreview && (
+            <div>
+              <label className="block text-gold font-semibold mb-2 flex items-center gap-2">
+                <ImageIcon className="w-4 h-4" />
+                Media Preview
+              </label>
+              <div className="relative h-60 w-full rounded-lg overflow-hidden border border-gold/30">
+                {mediaType === "VIDEO" && (imageFile?.type?.startsWith('video/') || imagePreview.includes('video')) ? (
+                  <video
+                    src={imagePreview}
+                    className="w-full h-full object-cover"
+                    controls
+                  />
+                ) : (
+                  <img
+                    src={imagePreview}
+                    alt="Media preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://via.placeholder.com/400x300?text=Invalid+Media+URL';
+                    }}
+                  />
+                )}
+                <button
+                  onClick={removeImage}
+                  className="absolute top-2 right-2 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full transition-colors"
+                  disabled={loading}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Media Type */}
+            <div>
+              <label className="block text-gold font-semibold mb-2">Media Type</label>
+              <select
+                value={mediaType}
+                onChange={(e) => setMediaType(e.target.value)}
+                className="w-full p-4 bg-navy/50 border border-gold/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
+                disabled={loading}
+              >
+                <option value="IMAGE">📸 Image</option>
+                <option value="VIDEO">🎥 Video</option>
+              </select>
+            </div>
+
+            {/* Category */}
+            <div>
+              <label className="block text-gold font-semibold mb-2">Story Category</label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                className="w-full p-4 bg-navy/50 border border-gold/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
+                disabled={loading}
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat === "FUNNY" && "😂 "}
+                    {cat === "SAD" && "😢 "}
+                    {cat === "EMOTIONAL" && "❤️ "}
+                    {cat === "JOURNEY" && "🚀 "}
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label className="block text-gold font-semibold mb-2 flex items-center gap-2">
+              <Tag className="w-4 h-4" />
+              Tags
+            </label>
+            <input
+              name="tags"
+              value={formData.tags}
+              onChange={handleInputChange}
+              placeholder="adventure, funny, heartwarming, rescue"
+              className="w-full p-4 bg-navy/50 border border-gold/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-gold transition-all duration-300"
+              disabled={loading}
+            />
+            <p className="text-white/60 text-xs mt-1">
+              Separate tags with commas
+            </p>
           </div>
         </div>
 
-        {/* Fixed Footer */}
-        <div className="flex justify-end gap-4 px-8 py-6 border-t border-gray-700 flex-shrink-0 bg-gradient-to-br from-gray-900 via-black to-gray-800">
+        {/* Footer */}
+        <div className="flex justify-end gap-4 px-6 py-4 border-t border-gold/20 bg-navy/50">
           <button
             onClick={onClose}
-            className="px-6 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-all duration-300 font-semibold"
+            className="px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-300 font-semibold"
             disabled={loading}
           >
             Cancel
@@ -463,22 +483,20 @@ const CreateStoryForm = ({ userId, story, onClose, onUpdated }) => {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-8 py-3 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black rounded-xl hover:from-yellow-500 hover:to-yellow-700 transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-yellow-400/25 flex items-center gap-2 min-w-[140px] justify-center"
+            className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-8 py-3 rounded-lg font-bold transition-all duration-300 disabled:opacity-50 flex items-center gap-2 shadow-lg"
           >
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
                 {story ? "Updating..." : "Creating..."}
               </>
-            ) : story ? (
-              "Update Story"
             ) : (
-              "Create Story"
+              story ? "Update Story" : "Create Story"
             )}
           </button>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 

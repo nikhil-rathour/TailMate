@@ -18,26 +18,46 @@ const bucket = storage.bucket(bucketName);
 
 // Uploads a file buffer to GCS and returns the public URL
 async function uploadImage(fileBuffer, fileName, mimetype) {
-  const blob = bucket.file(fileName);
-  const stream = blob.createWriteStream({ resumable: false, contentType: mimetype });
-
-  return new Promise((resolve, reject) => {
-    stream.on('error', (err) => reject(err));
-    stream.on('finish', async () => {
-      // Do NOT call makePublic() if uniform bucket-level access is enabled
-      resolve(getPublicUrl(fileName));
+  try {
+    const blob = bucket.file(fileName);
+    const stream = blob.createWriteStream({ 
+      resumable: false, 
+      contentType: mimetype,
+      metadata: {
+        cacheControl: 'public, max-age=31536000'
+      }
     });
-    stream.end(fileBuffer);
-  });
+
+    return new Promise((resolve, reject) => {
+      stream.on('error', (err) => {
+        console.error('GCS upload error:', err);
+        reject(new Error(`Failed to upload file: ${err.message}`));
+      });
+      stream.on('finish', async () => {
+        console.log(`File uploaded successfully: ${fileName}`);
+        resolve(getPublicUrl(fileName));
+      });
+      stream.end(fileBuffer);
+    });
+  } catch (error) {
+    console.error('GCS upload setup error:', error);
+    throw new Error(`Upload failed: ${error.message}`);
+  }
 }
 
 function getPublicUrl(fileName) {
   return `https://storage.googleapis.com/${bucketName}/${fileName}`;
 }
 
-// Optionally, delete an image from GCS
+// Delete an image from GCS
 async function deleteImage(fileName) {
-  await bucket.file(fileName).delete();
+  try {
+    await bucket.file(fileName).delete();
+    console.log(`File deleted successfully: ${fileName}`);
+  } catch (error) {
+    console.error(`Error deleting file ${fileName}:`, error);
+    // Don't throw error for cleanup operations
+  }
 }
 
 module.exports = { uploadImage, getPublicUrl, deleteImage }; 

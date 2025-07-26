@@ -1,9 +1,25 @@
 const storyService = require("../services/story.service");
-
+const { uploadImage } = require("../services/gcs.service");
 
 const createStory = async (req, res) => {
   try {
-    const storyData = req.body;
+    let storyData = { ...req.body };
+
+    // Handle tags if they come as JSON string
+    if (typeof storyData.tags === 'string') {
+      try {
+        storyData.tags = JSON.parse(storyData.tags);
+      } catch {
+        storyData.tags = storyData.tags.split(',').map(t => t.trim()).filter(Boolean);
+      }
+    }
+
+    // Handle file upload if present
+    if (req.file) {
+      const fileName = `stories/${Date.now()}-${req.file.originalname}`;
+      const mediaUrl = await uploadImage(req.file.buffer, fileName, req.file.mimetype);
+      storyData.mediaUrl = mediaUrl;
+    }
 
     if (!storyData.userId || !storyData.title || !storyData.header || !storyData.content) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
@@ -43,7 +59,24 @@ const getStoryById = async (req, res) => {
 const updateStory = async (req, res) => {
     try {
         const storyId = req.params.id;
-        const updatedStoryData = req.body;
+        let updatedStoryData = { ...req.body };
+
+        // Handle tags if they come as JSON string
+        if (typeof updatedStoryData.tags === 'string') {
+            try {
+                updatedStoryData.tags = JSON.parse(updatedStoryData.tags);
+            } catch {
+                updatedStoryData.tags = updatedStoryData.tags.split(',').map(t => t.trim()).filter(Boolean);
+            }
+        }
+
+        // Handle file upload if present
+        if (req.file) {
+            const fileName = `stories/${Date.now()}-${req.file.originalname}`;
+            const mediaUrl = await uploadImage(req.file.buffer, fileName, req.file.mimetype);
+            updatedStoryData.mediaUrl = mediaUrl;
+        }
+
         const updatedStory = await storyService.updateStory(storyId, updatedStoryData);
         res.status(200).json({ success: true, message: "Story updated successfully", data: updatedStory });
     } catch (error) {

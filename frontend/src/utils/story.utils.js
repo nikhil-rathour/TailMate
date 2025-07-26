@@ -4,7 +4,13 @@ const API_URL = `${import.meta.env.VITE_BACKEND}/api/stories`;
 
 export const CreateStory = async (storyData) => {
   try {
-    const response = await axios.post(`${API_URL}/create-story`, storyData);
+    const config = {
+      headers: {
+        'Content-Type': storyData instanceof FormData ? 'multipart/form-data' : 'application/json'
+      }
+    };
+    
+    const response = await axios.post(`${API_URL}/create-story`, storyData, config);
     return response.data;
   } catch (error) {
     console.error("CreateStory error:", error);
@@ -45,13 +51,18 @@ export const DeleteStory = async (storyId) => {
 
 export const UpdateStory = async (storyId, storyData) => {
     try {
-        const response = await axios.put(`${API_URL}/update-story/${storyId}`, storyData);
+        const config = {
+            headers: {
+                'Content-Type': storyData instanceof FormData ? 'multipart/form-data' : 'application/json'
+            }
+        };
+        
+        const response = await axios.put(`${API_URL}/update-story/${storyId}`, storyData, config);
         return response.data;
     } catch (error) {
         console.error('Error updating story:', error);
         throw error;
     }
-    
 }
 
 export const GetStoryById = async (storyId) => {

@@ -175,7 +175,7 @@ const Owenerdating = () => {
             transition={{ duration: 0.6 }}
             className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight drop-shadow-lg"
           >
-            Owner Dating
+            Fur Mate
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: -10 }}
@@ -183,7 +183,7 @@ const Owenerdating = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl mb-8 text-gold font-medium drop-shadow max-w-3xl mx-auto"
           >
-            Connect with other pet owners who share your love for animals. Find your perfect match!
+            Connect with other pet lovers who share your love for animals. Find your perfect match!
           </motion.p>
           <motion.button
             initial={{ opacity: 0, scale: 0.9 }}

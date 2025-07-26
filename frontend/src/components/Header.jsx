@@ -166,6 +166,26 @@ export default function Header() {
               </>
             )}
           </NavLink>
+
+            <NavLink
+            to="/stories"
+            className={({ isActive }) =>
+              `px-3 py-1 rounded-md font-semibold transition relative group ${
+                isActive ? "text-gold" : "text-white hover:text-gold"
+              }`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                Stories
+                <span
+                  className={`absolute left-1/2 -bottom-1 h-0.5 bg-gold rounded-full transition-all duration-300 transform -translate-x-1/2 ${
+                    isActive ? "w-2/3" : "w-0 group-hover:w-2/3"
+                  }`}
+                ></span>
+              </>
+            )}
+          </NavLink>
         </nav>
 
         {/* Desktop Icons */}

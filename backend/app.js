@@ -12,6 +12,7 @@ const matchRoutes = require("./routes/match.router")
 const cors = require("cors")
 const authRoutes = require("./routes/auth.router");
 const ownerDatingRoutes = require("./routes/owenerdating.router");
+const storyRoute = require("./routes/story.router") 
 
 
 app.use(express.json())
@@ -31,6 +32,7 @@ app.use("/api/owner-dating", ownerDatingRoutes);
 app.use("/api/likes", likeRoute);
 app.use("/api/chats", chatRoutes);
 app.use("/api/matches", matchRoutes);
+app.use("/api/stories", storyRoute);
 
 
 app.get("/", (req , res)=>{

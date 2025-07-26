@@ -27,6 +27,7 @@ import ViewOwnerDatingProfile from './components/ViewOwnerDatingProfile.jsx'
 import UpdateOwenerDatingProfile from './components/UpdateOwenerDatingProfile.jsx'
 import LiquidGlass from './components/LiquidGlass.jsx'
 import { LiquidGlassProvider, useLiquidGlass } from './context/LiquidGlassContext.jsx'
+import Stories from './pages/Stories.jsx'
 
 function AppContent() {
   const { isEnabled } = useLiquidGlass();
@@ -170,6 +171,12 @@ function AppContent() {
             <Route path="/update-owner-dating-profile/:_id" element={
               <ProtectedRoute>
                 <UpdateOwenerDatingProfile/>
+              </ProtectedRoute>
+            } />
+
+             <Route path="/stories" element={
+              <ProtectedRoute>
+                <Stories />
               </ProtectedRoute>
             } />
 

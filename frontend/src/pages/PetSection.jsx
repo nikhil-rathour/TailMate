@@ -175,7 +175,7 @@ const PetSection = () => {
             className="flex flex-wrap gap-4 justify-center"
           >
             <button
-              onClick={() => navigate("/dating")}
+              onClick={() => navigate("/add-pet")}
               className="bg-gradient-to-r from-gold to-accent-orange hover:from-accent-orange hover:to-gold text-navy px-8 py-3 rounded-full font-bold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] transform hover:scale-105 flex items-center gap-2"
             >
               <FiPlus /> Add New Pet
